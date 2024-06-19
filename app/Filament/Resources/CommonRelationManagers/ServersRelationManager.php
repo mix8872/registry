@@ -2,12 +2,16 @@
 
 namespace App\Filament\Resources\CommonRelationManagers;
 
+use App\Filament\Resources\ServerResource;
+use App\Models\Repository;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Table;
+use Livewire\Component as Livewire;
 
 class ServersRelationManager extends RelationManager
 {
@@ -20,12 +24,7 @@ class ServersRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')->readOnly()->maxLength(255),
-                Forms\Components\TextInput::make('type')->required(),
-                Forms\Components\TextInput::make('url')->required(),
-            ]);
+        return $form->schema(array_merge(self::getRepositoryPivotFields(), ServerResource::getFormFields()));
     }
 
     public function table(Table $table): Table
@@ -33,18 +32,26 @@ class ServersRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('name')
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Название'),
+                Tables\Columns\TextColumn::make('type')
+                    ->visible(fn (Livewire $livewire) => $livewire->ownerRecord instanceof Repository)
+                    ->label('Тип'),
+                Tables\Columns\TextColumn::make('url')
+                    ->visible(fn (Livewire $livewire) => $livewire->ownerRecord instanceof Repository)
+                    ->label('Url'),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()->form(fn(AttachAction $action): array => [
-                    $action->getRecordSelect(),
-                    Forms\Components\TextInput::make('type')->required(),
-                    Forms\Components\TextInput::make('url')->required(),
-                ])->preloadRecordSelect()->color('primary'),
-                Tables\Actions\CreateAction::make()->color('gray'),
+                AttachAction::make()
+                    ->form(fn(AttachAction $action): array => array_merge([$action->getRecordSelect()], self::getRepositoryPivotFields()))
+                    ->preloadRecordSelect()
+                    ->color('primary'),
+                CreateAction::make()
+                    ->form(fn(CreateAction $action): array => array_merge(self::getRepositoryPivotFields(), ServerResource::getFormFields()))
+                    ->color('gray'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -55,5 +62,19 @@ class ServersRelationManager extends RelationManager
                     Tables\Actions\DetachBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getRepositoryPivotFields()
+    {
+        return [
+            Forms\Components\TextInput::make('type')
+                ->visible(fn (Livewire $livewire) => $livewire->ownerRecord instanceof Repository)
+                ->required()
+                ->label('Тип'),
+            Forms\Components\TextInput::make('url')
+                ->visible(fn (Livewire $livewire) => $livewire->ownerRecord instanceof Repository)
+                ->required()
+                ->label('Url'),
+        ];
     }
 }

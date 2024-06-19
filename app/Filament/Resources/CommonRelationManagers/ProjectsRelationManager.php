@@ -1,38 +1,34 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\CommonRelationManagers;
 
-use App\Filament\Resources\CommonRelationManagers\RepositoriesRelationManager;
-use App\Filament\Resources\CommonRelationManagers\ServersRelationManager;
-use App\Filament\Resources\ProjectResource\Pages;
-use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
+use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Table;
-use Filament\Forms\Components\ViewField;
 
-//use Filament\Resources\Tables\Columns;
-//use Filament\Resources\Tables\Filter;
-//use Filament\Resources\Tables\Table as TableRes;
-
-class ProjectResource extends Resource
+class ProjectsRelationManager extends RelationManager
 {
-    protected static ?string $model = Project::class;
+    protected static string $relationship = 'projects';
     protected static ?string $modelLabel = 'Проект';
     protected static ?string $pluralModelLabel = 'Проекты';
+    protected static ?string $title = 'Проекты';
     protected static ?string $recordTitleAttribute = 'name';
-    protected static ?string $navigationIcon = 'heroicon-s-squares-2x2';
-    protected static ?int $navigationSort = 1;
+    protected static ?string $icon = 'heroicon-s-squares-2x2';
 
-    public static function form(Form $form): Form
+    protected static bool $isLazy = false;
+
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required()->maxLength(255)->label('Название'),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\ToggleButtons::make('status')->options(Project::$statuses)->inline()->required()->label('Статус'),
                 Forms\Components\TextInput::make('crm_id')->label('ID в CRM'),
                 Forms\Components\TextInput::make('crm_url')->suffixAction(
@@ -51,9 +47,10 @@ class ProjectResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Project $r) => $r->comment)->label('Название'),
@@ -64,31 +61,14 @@ class ProjectResource extends Resource
                 Tables\Filters\SelectFilter::make('status')
                     ->options(Project::$statuses)->label('Статус'),
             ])
+            ->headerActions([
+                Tables\Actions\AttachAction::make()->preloadRecordSelect()->color('primary'),
+                Tables\Actions\CreateAction::make()->color('gray'),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            RepositoriesRelationManager::class,
-            ServersRelationManager::class,
-            RelationManagers\StacksRelationManager::class,
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListProjects::route('/'),
-            'create' => Pages\CreateProject::route('/create'),
-            'edit' => Pages\EditProject::route('/{record}/edit'),
-        ];
     }
 }

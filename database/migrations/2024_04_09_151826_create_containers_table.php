@@ -20,6 +20,20 @@ return new class extends Migration
             $table->unsignedBigInteger('repository_id')->index();
             $table->string('compose_path');
             $table->string('config_repository_url')->nullable();
+            $table->integer('created_by')->index();
+            $table->integer('updated_by')->index();
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
+
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
 
             $table->foreign('server_id')
                 ->references('id')

@@ -18,6 +18,20 @@ return new class extends Migration
             $table->text('comment')->nullable();
             $table->boolean('is_public_nat')->default(false);
             $table->string('creds_url');
+            $table->integer('created_by')->index();
+            $table->integer('updated_by')->index();
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
+
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
         });
     }
 

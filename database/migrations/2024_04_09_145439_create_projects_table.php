@@ -20,6 +20,19 @@ return new class extends Migration
             $table->integer('crm_id')->index()->nullable();
             $table->string('crm_url')->index()->nullable();
             $table->string('creds_url')->index()->nullable();
+            $table->integer('created_by')->index();
+            $table->integer('updated_by')->index();
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
         });
     }
 

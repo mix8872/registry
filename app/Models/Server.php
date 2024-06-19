@@ -25,4 +25,9 @@ class Server extends Model
     {
         return $this->hasMany(Container::class);
     }
+
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class);
+    }
 }

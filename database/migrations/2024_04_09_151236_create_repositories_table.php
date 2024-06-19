@@ -18,6 +18,20 @@ return new class extends Migration
             $table->string('name')->index()->unique();
             $table->text('comment')->nullable();
             $table->string('url')->unique()->nullable();
+            $table->integer('created_by')->index();
+            $table->integer('updated_by')->index();
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
+
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('restrict')
+                ->onDelete('restrict');
         });
 
         Schema::create('repository_server', function (Blueprint $table) {
