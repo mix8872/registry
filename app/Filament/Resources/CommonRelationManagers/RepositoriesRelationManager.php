@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CommonRelationManagers;
 
+use App\Filament\Resources\RepositoryResource;
 use App\Models\Repository;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -23,16 +24,7 @@ class RepositoriesRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255)->label('Название'),
-                Forms\Components\TextInput::make('url')
-                    ->required()
-                    ->maxLength(255)->label('Ссылка'),
-                Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
-            ]);
+        return $form->schema(RepositoryResource::getFormFields());
     }
 
     public function table(Table $table): Table

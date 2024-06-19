@@ -25,31 +25,7 @@ class RepositoryResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255)->label('Название'),
-                Forms\Components\Select::make('project_id')
-                    ->relationship(name: 'project', titleAttribute: 'name')
-                    ->required()->label('Проект')
-                    ->suffixAction(
-                        Action::make('Перейти')
-                            ->icon('heroicon-m-globe-alt')
-                            ->iconButton()
-                            ->url(fn(Repository $r) => $r->project_id ? "/registry/projects/{$r->project_id}/edit" : null, true)
-                    ),
-                Forms\Components\TextInput::make('url')
-                    ->required()
-                    ->maxLength(255)->label('Ссылка')
-                    ->suffixAction(
-                        Action::make('Перейти')
-                            ->icon('heroicon-m-globe-alt')
-                            ->iconButton()
-                            ->url(fn(Repository $r) => $r->url, true)
-                    ),
-                Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
-            ]);
+        return $form->schema(self::getFormFields());
     }
 
     public static function table(Table $table): Table
@@ -104,6 +80,34 @@ class RepositoryResource extends Resource
             'index' => Pages\ListRepositories::route('/'),
             'create' => Pages\CreateRepository::route('/create'),
             'edit' => Pages\EditRepository::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getFormFields()
+    {
+        return [
+            Forms\Components\TextInput::make('name')
+                ->required()
+                ->maxLength(255)->label('Название'),
+            Forms\Components\Select::make('project_id')
+                ->relationship(name: 'project', titleAttribute: 'name')
+                ->required()->label('Проект')
+                ->suffixAction(
+                    Action::make('Перейти')
+                        ->icon('heroicon-m-globe-alt')
+                        ->iconButton()
+                        ->url(fn(Repository $r) => $r->project_id ? "/registry/projects/{$r->project_id}/edit" : null, true)
+                ),
+            Forms\Components\TextInput::make('url')
+                ->required()
+                ->maxLength(255)->label('Ссылка')
+                ->suffixAction(
+                    Action::make('Перейти')
+                        ->icon('heroicon-m-globe-alt')
+                        ->iconButton()
+                        ->url(fn(Repository $r) => $r->url, true)
+                ),
+            Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
         ];
     }
 }

@@ -16,6 +16,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Livewire\Component as Livewire;
 
 class ContainerResource extends Resource
 {
@@ -29,30 +30,7 @@ class ContainerResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')->required()->maxLength(255)->label('Название'),
-                Forms\Components\Select::make('repository_id')
-                    ->relationship(name: 'repository', titleAttribute: 'name')
-                    ->required()->label('Репозиторий')
-                    ->suffixAction(
-                        Action::make('Перейти')
-                            ->icon('heroicon-m-globe-alt')
-                            ->iconButton()
-                            ->url(fn(Container $r) => $r->repository_id ? "/registry/repositories/{$r->repository_id}/edit" : null, true)
-                    ),
-                Forms\Components\Select::make('server_id')
-                    ->relationship(name: 'server', titleAttribute: 'name')
-                    ->required()->label('Сервер')
-                    ->suffixAction(
-                        Action::make('Перейти')
-                            ->icon('heroicon-m-globe-alt')
-                            ->iconButton()
-                            ->url(fn(Container $r) => $r->server_id ? "/registry/servers/{$r->server_id}/edit" : null, true)
-                    ),
-                Forms\Components\TextInput::make('compose_path')->required()->columnSpanFull()->maxLength(255),
-                Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
-            ]);
+        return $form->schema(self::getFormFields());
     }
 
     public static function table(Table $table): Table
@@ -108,6 +86,33 @@ class ContainerResource extends Resource
             'index' => Pages\ListContainers::route('/'),
             'create' => Pages\CreateContainer::route('/create'),
             'edit' => Pages\EditContainer::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getFormFields()
+    {
+        return [
+            Forms\Components\TextInput::make('name')->required()->maxLength(255)->label('Название'),
+            Forms\Components\Select::make('repository_id')
+                ->relationship(name: 'repository', titleAttribute: 'name')
+                ->required()->label('Репозиторий')
+                ->suffixAction(
+                    Action::make('Перейти')
+                        ->icon('heroicon-m-globe-alt')
+                        ->iconButton()
+                        ->url(fn(Container $r) => $r->repository_id ? "/registry/repositories/{$r->repository_id}/edit" : null, true)
+                )->hidden(fn (Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Repository),
+            Forms\Components\Select::make('server_id')
+                ->relationship(name: 'server', titleAttribute: 'name')
+                ->required()->label('Сервер')
+                ->suffixAction(
+                    Action::make('Перейти')
+                        ->icon('heroicon-m-globe-alt')
+                        ->iconButton()
+                        ->url(fn(Container $r) => $r->server_id ? "/registry/servers/{$r->server_id}/edit" : null, true)
+                )->hidden(fn (Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Server),
+            Forms\Components\TextInput::make('compose_path')->required()->columnSpanFull()->maxLength(255),
+            Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
         ];
     }
 }

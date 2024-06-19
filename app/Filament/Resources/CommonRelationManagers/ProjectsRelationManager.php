@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CommonRelationManagers;
 
+use App\Filament\Resources\ProjectResource;
 use App\Models\Project;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
@@ -24,27 +25,7 @@ class ProjectsRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\ToggleButtons::make('status')->options(Project::$statuses)->inline()->required()->label('Статус'),
-                Forms\Components\TextInput::make('crm_id')->label('ID в CRM'),
-                Forms\Components\TextInput::make('crm_url')->suffixAction(
-                    Action::make('Перейти')
-                        ->icon('heroicon-m-globe-alt')
-                        ->iconButton()
-                        ->url(fn(Project $r) => $r->crm_url, true)
-                )->required()->maxLength(255)->url()->label('Ссылка на CRM'),
-                Forms\Components\TextInput::make('creds_url')->suffixAction(
-                    Action::make('Перейти')
-                        ->icon('heroicon-m-globe-alt')
-                        ->iconButton()
-                        ->url(fn(Project $r) => $r->creds_url, true)
-                )->maxLength(255)->url()->label('Доступы'),
-                Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
-            ]);
+        return $form->schema(ProjectResource::getFormFields());
     }
 
     public function table(Table $table): Table

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\CommonRelationManagers;
 
+use App\Filament\Resources\ContainerResource;
 use App\Models\Repository;
 use App\Models\Server;
 use Filament\Forms;
@@ -25,30 +26,7 @@ class ContainersRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')->required()->maxLength(255)->label('Название'),
-                Forms\Components\Select::make('repository_id')
-                    ->relationship(name: 'repository', titleAttribute: 'name')
-                    ->required()->label('Репозиторий')
-                    ->suffixAction(
-                        Action::make('Перейти')
-                            ->icon('heroicon-m-globe-alt')
-                            ->iconButton()
-                            ->url(fn(Repository $r) => $r->repository_id ? "/registry/repositories/{$r->repository_id}/edit" : null, true)
-                    )->hidden(fn (Livewire $livewire) => $livewire->ownerRecord instanceof \App\Models\Repository),
-                Forms\Components\Select::make('server_id')
-                    ->relationship(name: 'server', titleAttribute: 'name')
-                    ->required()->label('Сервер')
-                    ->suffixAction(
-                        Action::make('Перейти')
-                            ->icon('heroicon-m-globe-alt')
-                            ->iconButton()
-                            ->url(fn(Server $r) => $r->server_id ? "/registry/servers/{$r->server_id}/edit" : null, true)
-                    )->hidden(fn (Livewire $livewire) => $livewire->ownerRecord instanceof \App\Models\Server),
-                Forms\Components\TextInput::make('compose_path')->required()->columnSpanFull()->maxLength(255),
-                Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
-            ]);
+        return $form->schema(ContainerResource::getFormFields());
     }
 
     public function table(Table $table): Table
@@ -62,7 +40,6 @@ class ContainersRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-//                Tables\Actions\AttachAction::make()->multiple()->preloadRecordSelect()->color('primary'),
                 Tables\Actions\CreateAction::make()->color('primary'),
             ])
             ->actions([

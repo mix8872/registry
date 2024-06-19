@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\CommonRelationManagers\ProjectsRelationManager;
 use App\Filament\Resources\StackResource\Pages;
 use App\Filament\Resources\StackResource\RelationManagers;
 use App\Models\Stack;
@@ -27,8 +28,8 @@ class StackResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255)->label('Название'),
+                    ->required()->maxLength(255)
+                    ->label('Название'),
                 Forms\Components\ToggleButtons::make('type')
                     ->options(Stack::$types)->inline()
                     ->required()->label('Тип'),
@@ -63,7 +64,7 @@ class StackResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ProjectsRelationManager::class
         ];
     }
 

@@ -30,25 +30,7 @@ class ProjectResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')->required()->maxLength(255)->label('Название'),
-                Forms\Components\ToggleButtons::make('status')->options(Project::$statuses)->inline()->required()->label('Статус'),
-                Forms\Components\TextInput::make('crm_id')->label('ID в CRM'),
-                Forms\Components\TextInput::make('crm_url')->suffixAction(
-                    Action::make('Перейти')
-                        ->icon('heroicon-m-globe-alt')
-                        ->iconButton()
-                        ->url(fn(Project $r) => $r->crm_url, true)
-                )->required()->maxLength(255)->url()->label('Ссылка на CRM'),
-                Forms\Components\TextInput::make('creds_url')->suffixAction(
-                    Action::make('Перейти')
-                        ->icon('heroicon-m-globe-alt')
-                        ->iconButton()
-                        ->url(fn(Project $r) => $r->creds_url, true)
-                )->maxLength(255)->url()->label('Доступы'),
-                Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
-            ]);
+        return $form->schema(self::getFormFields());
     }
 
     public static function table(Table $table): Table
@@ -89,6 +71,28 @@ class ProjectResource extends Resource
             'index' => Pages\ListProjects::route('/'),
             'create' => Pages\CreateProject::route('/create'),
             'edit' => Pages\EditProject::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getFormFields()
+    {
+        return [
+            Forms\Components\TextInput::make('name')->required()->maxLength(255)->label('Название'),
+            Forms\Components\ToggleButtons::make('status')->options(Project::$statuses)->inline()->required()->label('Статус'),
+            Forms\Components\TextInput::make('crm_id')->label('ID в CRM'),
+            Forms\Components\TextInput::make('crm_url')->suffixAction(
+                Action::make('Перейти')
+                    ->icon('heroicon-m-globe-alt')
+                    ->iconButton()
+                    ->url(fn(Project $r) => $r->crm_url, true)
+            )->required()->maxLength(255)->url()->label('Ссылка на CRM'),
+            Forms\Components\TextInput::make('creds_url')->suffixAction(
+                Action::make('Перейти')
+                    ->icon('heroicon-m-globe-alt')
+                    ->iconButton()
+                    ->url(fn(Project $r) => $r->creds_url, true)
+            )->maxLength(255)->url()->label('Доступы'),
+            Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
         ];
     }
 }
