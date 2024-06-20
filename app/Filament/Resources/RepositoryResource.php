@@ -46,6 +46,10 @@ class RepositoryResource extends Resource
                     ->sortable()
                     ->url(fn(Repository $r): string => $r->url ?? '', true)
                     ->label('Ссылка'),
+                Tables\Columns\TextColumn::make('created_at')->sortable()->dateTime()
+                    ->description(fn(Repository $r) => $r->createdBy->name)->label('Создано'),
+                Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
+                    ->description(fn(Repository $r) => $r->updatedBy->name)->label('Обновлено'),
             ])
             ->filters([
                 SelectFilter::make('project')

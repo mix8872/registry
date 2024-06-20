@@ -13,7 +13,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components\ViewField;
 
 //use Filament\Resources\Tables\Columns;
 //use Filament\Resources\Tables\Filter;
@@ -41,6 +40,10 @@ class ProjectResource extends Resource
                     ->description(fn(Project $r) => $r->comment)->label('Название'),
                 Tables\Columns\SelectColumn::make('status')->selectablePlaceholder(false)
                     ->options(Project::$statuses)->sortable()->label('Статус'),
+                Tables\Columns\TextColumn::make('created_at')->sortable()->dateTime()
+                    ->description(fn(Project $r) => $r->createdBy->name)->label('Создано'),
+                Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
+                    ->description(fn(Project $r) => $r->updatedBy->name)->label('Обновлено'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
@@ -71,6 +74,13 @@ class ProjectResource extends Resource
             'index' => Pages\ListProjects::route('/'),
             'create' => Pages\CreateProject::route('/create'),
             'edit' => Pages\EditProject::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            \App\Filament\Widgets\ProjectsOverview::class,
         ];
     }
 

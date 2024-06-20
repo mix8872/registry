@@ -48,6 +48,10 @@ class ContainerResource extends Resource
                     ->url(fn(Container $r): string|null => $r->server ? "/registry/servers/{$r->server->id}/edit" : null, true)
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->sortable()->dateTime()
+                    ->description(fn(Container $r) => $r->createdBy->name)->label('Создано'),
+                Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
+                    ->description(fn(Container $r) => $r->updatedBy->name)->label('Обновлено'),
             ])
             ->filters([
                 SelectFilter::make('repository')

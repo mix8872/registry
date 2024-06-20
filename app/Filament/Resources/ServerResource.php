@@ -37,6 +37,10 @@ class ServerResource extends Resource
                     ->description(fn (Server $r) => $r->comment)->searchable()->sortable()->label('Название'),
                 Tables\Columns\IconColumn::make('is_public_nat')->boolean()->sortable()->label('Сервер за NAT'),
                 Tables\Columns\TextColumn::make('creds_url')->url(fn (Server $r) => $r->creds_url, true)->label('Доступы'),
+                Tables\Columns\TextColumn::make('created_at')->sortable()->dateTime()
+                    ->description(fn(Server $r) => $r->createdBy->name)->label('Создано'),
+                Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
+                    ->description(fn(Server $r) => $r->updatedBy->name)->label('Обновлено'),
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_public_nat')->label('Сервер за NAT'),
