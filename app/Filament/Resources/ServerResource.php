@@ -34,9 +34,9 @@ class ServerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->description(fn (Server $r) => $r->comment)->searchable()->sortable()->label('Название'),
+                    ->description(fn(Server $r) => $r->comment)->searchable()->sortable()->label('Название'),
                 Tables\Columns\IconColumn::make('is_public_nat')->boolean()->sortable()->label('Сервер за NAT'),
-                Tables\Columns\TextColumn::make('creds_url')->url(fn (Server $r) => $r->creds_url, true)->label('Доступы'),
+                Tables\Columns\TextColumn::make('creds_url')->url(fn(Server $r) => $r->creds_url, true)->label('Доступы'),
                 Tables\Columns\TextColumn::make('created_at')->sortable()->dateTime()
                     ->description(fn(Server $r) => $r->createdBy->name)->label('Создано'),
                 Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
@@ -78,14 +78,22 @@ class ServerResource extends Resource
     {
         return [
             Forms\Components\TextInput::make('name')->required()->maxLength(255)->label('Название'),
-            Forms\Components\TextInput::make('creds_url')->url()->suffixAction(
-                Action::make('Перейти')
-                    ->icon('heroicon-m-globe-alt')
-                    ->iconButton()
-                    ->url(fn(Server $r) => $r->creds_url, true)
-            )->maxLength(255)->url()->required()->label('Доступы'),
+            Forms\Components\TextInput::make('creds_url')
+                ->maxLength(255)->url()->required()
+                ->suffixAction(
+                    Action::make('Перейти')
+                        ->icon('heroicon-m-globe-alt')
+                        ->iconButton()
+                        ->url(fn(Server $r) => $r->creds_url, true)
+                )
+                ->label('Доступы'),
             Forms\Components\Toggle::make('is_public_nat')->label('Сервер за NAT'),
             Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
+            Forms\Components\CheckboxList::make('checklist')
+                ->options(Server::$checklistOptions)
+                ->columns(4)
+                ->columnSpanFull()
+                ->label('Чеклист')
         ];
     }
 }

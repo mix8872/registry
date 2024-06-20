@@ -13,6 +13,20 @@ class Server extends Model
     use HasFactory;
     use HasOwner;
 
+    public static array $checklistOptions = [
+        'ssh_protected' => 'Защита SSH',
+        'has_admin_user' => 'Создан пользователь admin',
+        'set_admin_password' => 'Создан пароль пользователю admin',
+        'set_root_password' => 'Изменён пароль по-умолчанию для root'
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'checklist' => 'array',
+        ];
+    }
+
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class)->withPivot(['type', 'url']);

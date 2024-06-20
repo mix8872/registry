@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('name')->index()->unique();
             $table->text('comment')->nullable();
+            $table->text('checklist')->nullable();
             $table->boolean('is_public_nat')->default(false);
             $table->string('creds_url');
             $table->integer('created_by')->index();
