@@ -21,7 +21,7 @@ class ContainersOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Container $r) => $r->comment)
-                    ->url(fn(Container $r): string|null => "/registry/container/{$r->id}/edit", true)
+                    ->url(fn(Container $r): string|null => "/registry/containers/{$r->id}/edit", true)
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
                     ->description(fn(Container $r) => $r->updatedBy->name)->label('Обновлено'),
