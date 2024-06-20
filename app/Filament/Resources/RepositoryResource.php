@@ -103,6 +103,7 @@ class RepositoryResource extends Resource
                         ->url(fn(Repository $r) => $r->project_id ? "/registry/projects/{$r->project_id}/edit" : null, true)
                 ),
             Forms\Components\TextInput::make('url')
+                ->url()
                 ->required()
                 ->maxLength(255)->label('Ссылка')
                 ->suffixAction(

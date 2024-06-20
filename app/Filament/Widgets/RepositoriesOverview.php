@@ -23,7 +23,7 @@ class RepositoriesOverview extends BaseWidget
                     ->description(fn(Repository $r) => $r->comment)
                     ->url(fn(Repository $r): string|null => "/registry/repositories/{$r->id}/edit", true)
                     ->label('Название'),
-                Tables\Columns\SelectColumn::make('url')
+                Tables\Columns\TextColumn::make('url')
                     ->url(fn(Repository $r): string => $r->url ?? '', true)
                     ->sortable()->label('Ссылка'),
                 Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
