@@ -29,6 +29,7 @@ class RepositoriesOverview extends BaseWidget
                 Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
                     ->description(fn(Repository $r) => $r->updatedBy->name)->label('Обновлено'),
             ])
-            ->paginated(false);
+            ->paginated(false)
+            ->searchable(false);
     }
 }
