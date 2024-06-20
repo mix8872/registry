@@ -15,6 +15,8 @@ class AddressesRelationManager extends RelationManager
 {
     protected static string $relationship = 'addresses';
     protected static ?string $title = 'IP адреса';
+    protected static ?string $modelLabel = 'IP адрес';
+    protected static ?string $pluralModelLabel = 'IP адреса';
     protected static ?string $icon = 'heroicon-o-computer-desktop';
 
     protected static bool $isLazy = false;
@@ -24,9 +26,13 @@ class AddressesRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('ip_addr')
+                    ->ip()
                     ->required()
-                    ->maxLength(255)->label('Адрес'),
-                Forms\Components\TextInput::make('is_public')->label('Белый IP'),
+                    ->maxLength(255)->label('IP адрес')
+                    ->validationMessages([
+                        'ip' => ':attribute заполнен неверно',
+                    ]),
+                Forms\Components\Toggle::make('is_public')->label('Белый IP'),
                 Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
             ]);
     }
