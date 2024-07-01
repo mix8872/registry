@@ -43,6 +43,7 @@ class ContainersRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()->color('primary'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
             ])

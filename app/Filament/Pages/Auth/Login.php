@@ -3,6 +3,7 @@
 namespace App\Filament\Pages\Auth;
 
 use App\Models\User;
+use BezhanSalleh\FilamentShield\FilamentShield;
 use Error;
 use Exception;
 use Filament\Forms\Components\Checkbox;
@@ -12,10 +13,12 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Auth\Login as BasePage;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
 
@@ -61,7 +64,7 @@ class Login extends BasePage implements HasForms
         $pass = strip_tags($data['password']);
         $loginRes = $this->ipaLogin($user, $pass);
 
-        if (!$loginRes['success'] || !in_array(env('ADMIN_GROUP'), $loginRes['userData']['memberof_group'])) {
+        if (!$loginRes['success']) {
             $this->throwFailureValidationException();
         }
 
@@ -72,7 +75,13 @@ class Login extends BasePage implements HasForms
             'password' => Hash::make($pass)
         ]);
 
-        Auth::login($user, $this->remember);
+        foreach ($loginRes['userData']['memberof_group'] as $role) {
+            FilamentShield::createRole($role);
+        }
+
+        $user->syncRoles(...$loginRes['userData']['memberof_group']);
+
+        Auth::login($user, $data['remember']);
         return app(LoginResponse::class);
     }
 
@@ -113,6 +122,7 @@ class Login extends BasePage implements HasForms
 
             $cookies = $jar->count() ? $jar->toArray()[0] : false;
         } catch (Error|Exception $e) {
+            Log::error("IPA login failure: " . $e->getMessage());
             $this->throwFailureValidationException();
         }
 

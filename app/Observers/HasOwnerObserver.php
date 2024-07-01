@@ -14,12 +14,12 @@ class HasOwnerObserver
      */
     public function creating(Model $r): void
     {
-        $r->created_by = auth()->id();
-        $r->updated_by = auth()->id();
+        $r->created_by = $r->created_by ?: auth()->id();
+        $r->updated_by = $r->updated_by ?: auth()->id();
     }
 
     public function updating(Model $r)
     {
-        $r->updated_by = auth()->id();
+        $r->updated_by = $r->updated_by ?: auth()->id();
     }
 }

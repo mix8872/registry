@@ -9,11 +9,15 @@ use App\Filament\Resources\ServerResource\Pages;
 use App\Filament\Resources\ServerResource\RelationManagers;
 use App\Models\Server;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Actions\Action;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class ServerResource extends Resource
 {
@@ -34,25 +38,72 @@ class ServerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->description(fn(Server $r) => $r->comment)->searchable()->sortable()->label('Название'),
-                Tables\Columns\IconColumn::make('is_public_nat')->boolean()->sortable()->label('Сервер за NAT'),
-                Tables\Columns\TextColumn::make('creds_url')->url(fn(Server $r) => $r->creds_url, true)->label('Доступы'),
-                Tables\Columns\TextColumn::make('created_at')->sortable()->dateTime()
-                    ->description(fn(Server $r) => $r->createdBy->name)->label('Создано'),
-                Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
-                    ->description(fn(Server $r) => $r->updatedBy->name)->label('Обновлено'),
+                    ->description(fn(Model $r) => $r->comment)
+                    ->searchable()->sortable()
+                    ->label('Название'),
+                Tables\Columns\IconColumn::make('is_public_nat')
+                    ->boolean()->sortable()
+                    ->label('Сервер за NAT'),
+                Tables\Columns\TextColumn::make('creds_url')
+                    ->url(fn(Model $r) => $r->creds_url, true)
+                    ->getStateUsing(fn () => 'Перейти')
+                    ->label('Доступы'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->description(fn(Model $r) => $r->createdBy->name)
+                    ->sortable()->dateTime()
+                    ->label('Создано'),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->description(fn(Model $r) => $r->updatedBy->name)
+                    ->sortable()->dateTime()
+                    ->label('Обновлено'),
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_public_nat')->label('Сервер за NAT'),
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Создано от'),
+                        DatePicker::make('created_until')->label('Создано до'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+                Filter::make('updated_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Обновлено от'),
+                        DatePicker::make('created_until')->label('Обновлено до'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('updated_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('updated_at', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->poll('5s');
     }
 
     public static function getRelations(): array
@@ -74,6 +125,11 @@ class ServerResource extends Resource
         ];
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function getFormFields()
     {
         return [
@@ -81,10 +137,20 @@ class ServerResource extends Resource
             Forms\Components\TextInput::make('creds_url')
                 ->maxLength(255)->url()->required()
                 ->suffixAction(
-                    Action::make('Перейти')
+                    Action::make('goto_creds')
                         ->icon('heroicon-m-globe-alt')
                         ->iconButton()
+                        ->hidden(fn(Server $r) => !$r->exists || !$r->creds_url)
                         ->url(fn(Server $r) => $r->creds_url, true)
+                        ->label('Перейти к доступам')
+                )
+                ->suffixAction(
+                    Action::make('open_vault')
+                        ->icon('heroicon-o-arrow-up-right')
+                        ->iconButton()
+                        ->hidden(fn(Server $r) => !env('VAULT_HOST') || $r->creds_url)
+                        ->url(fn(Server $r) => env('VAULT_HOST'), true)
+                        ->label('Открыть vault')
                 )
                 ->label('Доступы'),
             Forms\Components\Toggle::make('is_public_nat')->label('Сервер за NAT'),

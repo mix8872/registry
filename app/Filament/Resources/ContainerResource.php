@@ -5,17 +5,17 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ContainerResource\Pages;
 use App\Filament\Resources\ContainerResource\RelationManagers;
 use App\Models\Container;
-use App\Models\Repository;
-use App\Models\Server;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Livewire\Component as Livewire;
 
 class ContainerResource extends Resource
@@ -37,23 +37,59 @@ class ContainerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->description(fn(Container $r) => $r->comment)->label('Название'),
+                Tables\Columns\TextColumn::make('name')
+                    ->description(fn(Model $r) => $r->comment)
+                    ->label('Название'),
                 Tables\Columns\TextColumn::make('repository.name')
-                    ->label('Репозиторий')
-                    ->url(fn(Container $r): string|null => $r->repository ? "/registry/repositories/{$r->repository->id}/edit" : null, true)
-                    ->searchable()
-                    ->sortable(),
+                    ->url(fn(Model $r): string|null => $r->repository ? "/registry/repositories/{$r->repository->id}/edit" : null, true)
+                    ->searchable()->sortable()
+                    ->label('Репозиторий'),
                 Tables\Columns\TextColumn::make('server.name')
-                    ->label('Сервер')
-                    ->url(fn(Container $r): string|null => $r->server ? "/registry/servers/{$r->server->id}/edit" : null, true)
-                    ->searchable()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->sortable()->dateTime()
-                    ->description(fn(Container $r) => $r->createdBy->name)->label('Создано'),
-                Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
-                    ->description(fn(Container $r) => $r->updatedBy->name)->label('Обновлено'),
+                    ->url(fn(Model $r): string|null => $r->server ? "/registry/servers/{$r->server->id}/edit" : null, true)
+                    ->searchable()->sortable()
+                    ->label('Сервер'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->sortable()->dateTime()
+                    ->description(fn(Model $r) => $r->createdBy->name)
+                    ->label('Создано'),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->sortable()->dateTime()
+                    ->description(fn(Model $r) => $r->updatedBy->name)
+                    ->label('Обновлено'),
             ])
             ->filters([
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Создано от'),
+                        DatePicker::make('created_until')->label('Создано до'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+                Filter::make('updated_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Обновлено от'),
+                        DatePicker::make('created_until')->label('Обновлено до'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('updated_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('updated_at', '<=', $date),
+                            );
+                    }),
                 SelectFilter::make('repository')
                     ->multiple()
                     ->relationship('repository', 'name')
@@ -68,13 +104,17 @@ class ContainerResource extends Resource
                     ->label('Сервер')
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('updated_at', 'desc')
+            ->poll('5s');
     }
 
     public static function getRelations(): array
@@ -93,6 +133,11 @@ class ContainerResource extends Resource
         ];
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function getFormFields()
     {
         return [
@@ -100,21 +145,23 @@ class ContainerResource extends Resource
             Forms\Components\Select::make('repository_id')
                 ->relationship(name: 'repository', titleAttribute: 'name')
                 ->required()->label('Репозиторий')
+                ->searchable()
                 ->suffixAction(
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')
                         ->iconButton()
                         ->url(fn(Container $r) => $r->repository_id ? "/registry/repositories/{$r->repository_id}/edit" : null, true)
-                )->hidden(fn (Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Repository),
+                )->hidden(fn(Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Repository),
             Forms\Components\Select::make('server_id')
                 ->relationship(name: 'server', titleAttribute: 'name')
                 ->required()->label('Сервер')
+                ->searchable()
                 ->suffixAction(
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')
                         ->iconButton()
                         ->url(fn(Container $r) => $r->server_id ? "/registry/servers/{$r->server_id}/edit" : null, true)
-                )->hidden(fn (Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Server),
+                )->hidden(fn(Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Server),
             Forms\Components\TextInput::make('compose_path')->required()->columnSpanFull()->maxLength(255),
             Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
         ];

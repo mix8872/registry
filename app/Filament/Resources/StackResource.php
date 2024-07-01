@@ -40,8 +40,10 @@ class StackResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->label('Название'),
-                Tables\Columns\TextColumn::make('type')->label('Тип'),
+                Tables\Columns\TextColumn::make('name')
+                    ->label('Название'),
+                Tables\Columns\TextColumn::make('type')
+                    ->label('Тип'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
@@ -51,14 +53,16 @@ class StackResource extends Resource
                 // ...
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->poll('5s');
     }
 
     public static function getRelations(): array
@@ -75,5 +79,10 @@ class StackResource extends Resource
             'create' => Pages\CreateStack::route('/create'),
             'edit' => Pages\EditStack::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

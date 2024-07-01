@@ -23,6 +23,17 @@ class Project extends Model
         self::STATUS_ARCHIVED => 'В архиве'
     ];
 
+    public $fillable = [
+        'name',
+        'comment',
+        'status',
+        'crm_id',
+        'crm_url',
+        'created_by',
+        'updated_by',
+        'created_at'
+    ];
+
     public function stacks(): BelongsToMany
     {
         return $this->belongsToMany(Stack::class);

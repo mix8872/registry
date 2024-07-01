@@ -54,6 +54,7 @@ class ServersRelationManager extends RelationManager
                     ->color('gray'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
             ])
@@ -74,6 +75,7 @@ class ServersRelationManager extends RelationManager
             Forms\Components\TextInput::make('url')
                 ->visible(fn (Livewire $livewire) => $livewire->ownerRecord instanceof Repository)
                 ->required()
+                ->url()
                 ->label('Url'),
         ];
     }

@@ -54,6 +54,7 @@ class RepositoriesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()->color(fn (Livewire $livewire) => $livewire->ownerRecord instanceOf \App\Models\Project ? 'primary' : 'gray'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
             ])

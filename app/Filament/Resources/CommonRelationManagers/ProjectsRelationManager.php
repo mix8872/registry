@@ -47,6 +47,7 @@ class ProjectsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()->color('gray'),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
