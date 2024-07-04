@@ -6,7 +6,7 @@ setup:
 	php artisan october:migrate
 deploy:
 	composer install
-	php artisan migrate -n
+	php artisan migrate --force
 	php artisan cache:clear
 clear:
 	php artisan clear-compiled
