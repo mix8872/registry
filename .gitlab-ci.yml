@@ -1,0 +1,20 @@
+image: $GLOBAL_CI_DOCKER_IMAGE
+stages:
+  - build
+  - test
+  - deploy
+
+dev-deploy:
+  stage: deploy
+  environment: development
+  variables:
+    APP_ROOT: ${GRCH_SITES_ROOT}/${APP_DOMAIN_NAME}
+  script:
+    - docker exec registry-phpfpm git pull --ff-only origin dev
+    - docker exec registry-phpfpm sh -c "make deploy && make clear"
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+  tags:
+    - ${GRCH_CI_TAG}
+
+
