@@ -36,32 +36,13 @@ class LoadCollabProjects extends Command
             $this->line('Начало импорта проектов');
             $this->line('Получение проектов');
             $projects = $client->get('projects')->getJson();
-            $this->withProgressBar($projects, function ($project) use ($host) {
-                $user = User::firstOrCreate(['email' => $project['created_by_email']], [
-                    'name' => substr($project['created_by_email'], 0, strpos($project['created_by_email'], '@')),
-                    'email' => $project['created_by_email'],
-                    'password' => Hash::make($project['created_by_email'])
-                ]);
-                $attributes = [
-                    'name' => $project['name'],
-                    'comment' => $project['body'],
-                    'status' => $project['is_trashed'] ? Project::STATUS_ARCHIVED : Project::STATUS_ACTIVE,
-                    'crm_id' => $project['id'],
-                    'crm_url' => "{$host}{$project['url_path']}",
-                    'created_by' => $user->id,
-                    'updated_by' => $user->id,
-                    'created_at' => date('Y-m-d H:i:s', $project['created_on']),
-                ];
-                $project = Project::firstOrNew(['crm_id' => $project['id']], $attributes);
-                if ($project->exists) {
-                    $project->update($attributes);
-                }
-                $project->save();
+            $this->withProgressBar($projects, function ($project) {
+                Project::makeFromCollab($project);
             });
 
             $this->line('Сверка архивных проектов');
             $projects = $client->get('projects/archive')->getJson();
-            $this->withProgressBar($projects, function ($project) use ($host) {
+            $this->withProgressBar($projects, function ($project) {
                 if ($project = Project::firstWhere(['crm_id' => $project['id']])) {
                     $project->status = Project::STATUS_ARCHIVED;
                     $project->save();

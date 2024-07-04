@@ -5,16 +5,24 @@ namespace App\Classes;
 use App\Models\Project;
 use App\Models\User;
 use Http\Discovery\Exception\NotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 
 class ActiveCollabHooks
 {
+    public const MSG_ARCHIVED = 'The project has been archived';
+    public const MSG_UNARCHIVED = 'The project has been unarchived';
+    public const MSG_CREATED = 'The project has been created';
+
+    public const COLLAB_EVENT_CREATED = 'ProjectCreated';
     public const COLLAB_EVENT_DELETED = 'ProjectMovedToTrash';
     public const COLLAB_EVENT_RESTORED = 'ProjectRestoredFromTrash';
     public const COLLAB_EVENT_COMPLETED = 'ProjectCompleted';
     public const COLLAB_EVENT_REOPENED = 'ProjectReopened';
 
     public static $events = [
+        self::COLLAB_EVENT_CREATED => 'Проект создан',
         self::COLLAB_EVENT_DELETED => 'Проект удален',
         self::COLLAB_EVENT_RESTORED => 'Проект восстановлен',
         self::COLLAB_EVENT_COMPLETED => 'Проект архивирован',
@@ -25,43 +33,69 @@ class ActiveCollabHooks
     {
     }
 
+    /**
+     * @return JsonResponse
+     */
+    public function projectCreated(): JsonResponse
+    {
+        Project::makeFromCollab($this->data['payload']);
+        return response()->json([
+            'success' => true,
+            'message' => self::MSG_CREATED
+        ]);
+    }
+
+    /**
+     * @return JsonResponse
+     */
     public function projectMovedToTrash()
     {
         self::getProjectById($this->data['payload']['id'])->archive(self::getCollabUserById($this->data['payload']['updated_by_id']));
         return response()->json([
             'success' => true,
-            'message' => 'Project was archived'
+            'message' => self::MSG_ARCHIVED
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function projectRestoredFromTrash()
     {
         self::getProjectById($this->data['payload']['id'])->unarchive(self::getCollabUserById($this->data['payload']['updated_by_id']));
         return response()->json([
             'success' => true,
-            'message' => 'Project was unarchived'
+            'message' => self::MSG_UNARCHIVED
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function projectCompleted()
     {
         self::getProjectById($this->data['payload']['id'])->archive(self::getCollabUserById($this->data['payload']['updated_by_id']));
         return response()->json([
             'success' => true,
-            'message' => 'Project was archived'
+            'message' => self::MSG_ARCHIVED
         ]);
     }
 
+    /**
+     * @return JsonResponse
+     */
     public function projectReopened()
     {
         self::getProjectById($this->data['payload']['id'])->unarchive(self::getCollabUserById($this->data['payload']['updated_by_id']));
         return response()->json([
             'success' => true,
-            'message' => 'Project was unarchived'
+            'message' => self::MSG_UNARCHIVED
         ]);
     }
 
     /**
+     * Получение модели локального проекта по id проекта из ActiveCollab
+     *
      * @param int $id
      * @return Project
      */
@@ -74,6 +108,8 @@ class ActiveCollabHooks
     }
 
     /**
+     * Получение локального пользователя по id из ActiveCollab
+     *
      * @param int $id
      * @return mixed
      */
