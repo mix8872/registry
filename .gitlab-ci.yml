@@ -11,10 +11,11 @@ dev-deploy:
     APP_DOMAIN_NAME: registry.grch.digital
     APP_ROOT: ${GRCH_SITES_ROOT}/${APP_DOMAIN_NAME}
   script:
-    - docker exec registry-phpfpm git pull --ff-only origin dev
+    - cd ${APP_ROOT}
+    - git pull --ff-only origin master
     - docker exec registry-phpfpm sh -c "make deploy && make clear"
   rules:
-    - if: $CI_COMMIT_BRANCH == "dev"
+    - if: $CI_COMMIT_BRANCH == "master"
   tags:
     - ${GRCH_CI_TAG}
 
