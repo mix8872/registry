@@ -11,7 +11,7 @@ dev-deploy:
     APP_DOMAIN_NAME: registry.grechka.digital
     APP_ROOT: ${GRCH_SITES_ROOT}/${APP_DOMAIN_NAME}
   script:
-    - cd ${APP_ROOT}
+    - cd ${APP_ROOT}/project
     - git pull --ff-only origin master
     - docker exec registry-phpfpm sh -c "make deploy && make clear"
   rules:
