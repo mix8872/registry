@@ -31,4 +31,25 @@ return [
         ],
     ],
 
+    'collab' => [
+        'host' => env('COLLAB_HOST'),
+        'token' => env('COLLAB_TOKEN'),
+        'pass' => env('PASS_TO_COLLAB', false),
+        'hook_token' => env('COLLAB_HOOK_TOKEN'),
+    ],
+
+    'ipa' => [
+        'host' => env('IPA_HOST', 'newipa.grechka.digital'),
+        'ca_cert' => env('IPA_CACERT'),
+        'version' => env('IPA_VERSION'),
+    ],
+
+    'gitlab' => [
+        'host' => env('GITLAB_HOST'),
+        'token' => env('GITLAB_TOKEN'),
+    ],
+
+    'vault' => [
+        'host' => env('VAULT_HOST', 'https://vw.grechka.digital')
+    ]
 ];

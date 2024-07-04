@@ -29,8 +29,8 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('/' . getenv('ADMIN_ADDRESS'))
-            ->path('/' . getenv('ADMIN_ADDRESS'))
+            ->id('/' . config('filament.admin_address'))
+            ->path('/' . config('filament.admin_address'))
             ->login(Login::class)
             ->colors([
                 'primary' => Color::Amber,

@@ -14,6 +14,8 @@ return [
     |
     */
 
+    'admin_address' => env('ADMIN_ADDRESS'),
+
     'broadcasting' => [
 
         // 'echo' => [

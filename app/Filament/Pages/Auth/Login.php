@@ -110,12 +110,7 @@ class Login extends BasePage implements HasForms
         try {
             $jar = new \GuzzleHttp\Cookie\CookieJar;
 
-            Http::withOptions([
-                'ssl_key' => [env('IPA_CACERT')],
-                'cookies' => $jar
-            ])->withHeaders([
-                'referer' => env('IPA_HOST') . '/ipa'
-            ])->asForm()->post(env('IPA_HOST') . self::LOGIN_ENTPOINT, [
+            Http::ipa($jar)->asForm()->post(config('services.ipa.host') . self::LOGIN_ENTPOINT, [
                 'user' => $user,
                 'password' => $pass,
             ]);
@@ -137,18 +132,13 @@ class Login extends BasePage implements HasForms
 
     private function getUserData(string $user, \GuzzleHttp\Cookie\CookieJar|null $jar)
     {
-        $res = Http::withOptions([
-            'ssl_key' => [env('IPA_CACERT')],
-            'cookies' => $jar
-        ])->withHeaders([
-            'referer' => env('IPA_HOST') . '/ipa'
-        ])->post(env('IPA_HOST') . self::JSON_ENTPOINT, [
+        $res = Http::ipa($jar)->post(config('services.ipa.host') . self::JSON_ENTPOINT, [
             'method' => 'user_show/1',
             'params' => [
                 [$user],
                 [
                     'all' => true,
-                    'version' => env('IPA_VERSION')
+                    'version' => config('services.ipa.version')
                 ]
             ],
         ]);
@@ -157,7 +147,7 @@ class Login extends BasePage implements HasForms
 
     private static function validateCookies($c)
     {
-        $domain = ltrim(env('IPA_HOST', 'newipa.grechka.digital'), 'https://');
+        $domain = ltrim(config('services.ipa.host'), 'https://');
         return match (false) {
             isset($c['Name'], $c['Value'], $c['Domain']), $c['Name'] === 'ipa_session', $c['Domain'] === $domain => false,
             default => true,

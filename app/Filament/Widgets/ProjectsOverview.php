@@ -21,7 +21,7 @@ class ProjectsOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Project $r) => $r->comment)
-                    ->url(fn(Project $r): string|null => "/registry/projects/{$r->id}/edit", true)
+                    ->url(fn(Project $r): string|null => "/registry/projects/{$r->id}", true)
                     ->label('Название'),
                 Tables\Columns\SelectColumn::make('status')->selectablePlaceholder(false)
                     ->options(Project::$statuses)->sortable()->disabled(true)->label('Статус'),
@@ -29,6 +29,7 @@ class ProjectsOverview extends BaseWidget
                     ->description(fn(Project $r) => $r->updatedBy->name)->label('Обновлено'),
             ])
             ->paginated(false)
-            ->searchable(false);
+            ->searchable(false)
+            ->poll('5s');
     }
 }

@@ -148,8 +148,8 @@ class ServerResource extends Resource
                     Action::make('open_vault')
                         ->icon('heroicon-o-arrow-up-right')
                         ->iconButton()
-                        ->hidden(fn(Server $r) => !env('VAULT_HOST') || $r->creds_url)
-                        ->url(fn(Server $r) => env('VAULT_HOST'), true)
+                        ->hidden(fn(Server $r) => !onfig('services.vault.host') || $r->creds_url)
+                        ->url(fn(Server $r) => onfig('services.vault.host'), true)
                         ->label('Открыть vault')
                 )
                 ->label('Доступы'),
@@ -157,8 +157,8 @@ class ServerResource extends Resource
             Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
             Forms\Components\CheckboxList::make('checklist')
                 ->options(Server::$checklistOptions)
-                ->columns(4)
-                ->columnSpanFull()
+                ->columns(2)
+//                ->columnSpanFull()
                 ->label('Чеклист')
         ];
     }

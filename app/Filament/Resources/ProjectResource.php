@@ -164,8 +164,8 @@ class ProjectResource extends Resource
                     Action::make('open_collab')
                         ->icon('heroicon-o-arrow-up-right')
                         ->iconButton()
-                        ->hidden(fn(Project $r) => !env('COLLAB_HOST') || $r->crm_url)
-                        ->url(fn() => env('COLLAB_HOST'), true)
+                        ->hidden(fn(Project $r) => !config('services.collab.host') || $r->crm_url)
+                        ->url(fn() => config('services.collab.host'), true)
                         ->label('Открыть ActiveCollab')
                 )
                 ->required()->maxLength(255)->url()->label('Ссылка на CRM'),
@@ -182,8 +182,8 @@ class ProjectResource extends Resource
                     Action::make('open_vault')
                         ->icon('heroicon-o-arrow-up-right')
                         ->iconButton()
-                        ->hidden(fn(Project $r) => !env('VAULT_HOST') || $r->creds_url)
-                        ->url(fn() => env('VAULT_HOST'), true)
+                        ->hidden(fn(Project $r) => !config('services.vault.host') || $r->creds_url)
+                        ->url(fn() => config('services.vault.host'), true)
                         ->label('Открыть vault')
                 )->maxLength(255)->url()->label('Доступы'),
             Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),

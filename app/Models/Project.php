@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
 
 class Project extends Model
 {
@@ -47,5 +49,31 @@ class Project extends Model
     public function servers(): BelongsToMany
     {
         return $this->belongsToMany(Server::class);
+    }
+
+    /**
+     * @param integer|null $updated_by User id
+     * @return void
+     */
+    public function archive(int|null $updated_by = null): void
+    {
+        $this->status = self::STATUS_ARCHIVED;
+        if ($updated_by) {
+            $this->updated_by = $updated_by;
+        }
+        $this->save();
+    }
+
+    /**
+     * @param integer|null $updated_by User id
+     * @return void
+     */
+    public function unarchive(int|null $updated_by = null): void
+    {
+        $this->status = self::STATUS_ACTIVE;
+        if ($updated_by) {
+            $this->updated_by = $updated_by;
+        }
+        $this->save();
     }
 }

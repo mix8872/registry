@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\Repository;
 use App\Models\Server;
 use App\Observers\HasOwnerObserver;
+use App\Observers\ProjectObserver;
 use App\Observers\RepositoryObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -17,6 +18,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Project::observe(ProjectObserver::class);
         Project::observe(HasOwnerObserver::class);
         Server::observe(HasOwnerObserver::class);
         Repository::observe(HasOwnerObserver::class);

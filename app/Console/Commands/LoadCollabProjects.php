@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use ActiveCollab\SDK\Token;
+use App\Classes\ActiveCollabClient;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -31,20 +32,8 @@ class LoadCollabProjects extends Command
     public function handle()
     {
         try {
-            switch (true) {
-                case !$token = env('COLLAB_TOKEN'):
-                    $this->error('COLLAB_TOKEN не задан');
-                    return;
-                case !$host = env('COLLAB_HOST'):
-                    $this->error('COLLAB_HOST не задан');
-                    return;
-            }
-
+            $client = ActiveCollabClient::make();
             $this->line('Начало импорта проектов');
-            $objToken = new Token($token, $host);
-            $client = new \ActiveCollab\SDK\Client($objToken);
-            $client->setSslVerifyPeer(false);
-
             $this->line('Получение проектов');
             $projects = $client->get('projects')->getJson();
             $this->withProgressBar($projects, function ($project) use ($host) {
@@ -69,10 +58,20 @@ class LoadCollabProjects extends Command
                 }
                 $project->save();
             });
+
+            $this->line('Сверка архивных проектов');
+            $projects = $client->get('projects/archive')->getJson();
+            $this->withProgressBar($projects, function ($project) use ($host) {
+                if ($project = Project::firstWhere(['crm_id' => $project['id']])) {
+                    $project->status = Project::STATUS_ARCHIVED;
+                    $project->save();
+                }
+            });
+
             $this->newLine()->line('Импорт завершен');
         } catch (\Error|\Exception $e) {
             $this->error($e->getMessage());
-            if (env('APP_DEBUG')) {
+            if (config('app.debug')) {
                 $this->error($e->getTraceAsString());
             }
         }

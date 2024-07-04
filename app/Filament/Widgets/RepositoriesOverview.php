@@ -21,7 +21,7 @@ class RepositoriesOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Repository $r) => $r->comment)
-                    ->url(fn(Repository $r): string|null => "/registry/repositories/{$r->id}/edit", true)
+                    ->url(fn(Repository $r): string|null => "/registry/repositories/{$r->id}", true)
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('url')
                     ->url(fn(Repository $r): string => $r->url ?? '', true)
@@ -30,6 +30,7 @@ class RepositoriesOverview extends BaseWidget
                     ->description(fn(Repository $r) => $r->updatedBy->name)->label('Обновлено'),
             ])
             ->paginated(false)
-            ->searchable(false);
+            ->searchable(false)
+            ->poll('5s');
     }
 }
