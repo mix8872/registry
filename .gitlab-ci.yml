@@ -8,7 +8,7 @@ dev-deploy:
   stage: deploy
   environment: development
   variables:
-    APP_DOMAIN_NAME: registry.grch.digital
+    APP_DOMAIN_NAME: registry.grechka.digital
     APP_ROOT: ${GRCH_SITES_ROOT}/${APP_DOMAIN_NAME}
   script:
     - cd ${APP_ROOT}
