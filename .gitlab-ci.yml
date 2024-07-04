@@ -10,7 +10,8 @@ dev-deploy:
   variables:
     APP_ROOT: ${GRCH_SITES_ROOT}/${APP_DOMAIN_NAME}
   script:
-    - docker exec registry-phpfpm git pull --ff-only origin dev
+    - cd $APP_ROOT/project
+    - git pull --ff-only origin dev
     - docker exec registry-phpfpm sh -c "make deploy && make clear"
   rules:
     - if: $CI_COMMIT_BRANCH == "master"
