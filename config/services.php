@@ -51,5 +51,17 @@ return [
 
     'vault' => [
         'host' => env('VAULT_HOST', 'https://vw.grechka.digital')
-    ]
+    ],
+
+    'authentik' => [
+        'base_url' => env('AUTHENTIK_BASE_URL'),
+        'client_id' => env('AUTHENTIK_CLIENT_ID'),
+        'client_secret' => env('AUTHENTIK_CLIENT_SECRET'),
+        'redirect' => env('AUTHENTIK_REDIRECT_URI'),
+        'redirect_url' => env('AUTHENTIK_REDIRECT_URI'),
+    ],
+
+    'guzzle' => [
+        'verify' => false,
+    ],
 ];

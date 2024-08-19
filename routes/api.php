@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => '/api/hooks',
-    'middleware' => ExceptionMiddleware::class
+    'middleware' => ExceptionMiddleware::class,
 ], function () {
-    Route::middleware(CheckCollabTokenMiddleware::class)->post('/collab', [HooksController::class, 'collabHook']);
+    Route::middleware(CheckCollabTokenMiddleware::class)
+        ->post('/collab', [HooksController::class, 'collabHook'])
+        ->name('collabHook');
 });
 

@@ -34,6 +34,8 @@ class ActiveCollabHooks
     }
 
     /**
+     * Отработка события создания проекта
+     *
      * @return JsonResponse
      */
     public function projectCreated(): JsonResponse
@@ -46,6 +48,8 @@ class ActiveCollabHooks
     }
 
     /**
+     * Отработка события удаления проекта
+     *
      * @return JsonResponse
      */
     public function projectMovedToTrash()
@@ -58,6 +62,8 @@ class ActiveCollabHooks
     }
 
     /**
+     * Отработка события восстановления проекта
+     *
      * @return JsonResponse
      */
     public function projectRestoredFromTrash()
@@ -70,6 +76,8 @@ class ActiveCollabHooks
     }
 
     /**
+     * Отработка события закрытия проекта
+     *
      * @return JsonResponse
      */
     public function projectCompleted()
@@ -82,6 +90,8 @@ class ActiveCollabHooks
     }
 
     /**
+     * Отработка события открытия проекта
+     *
      * @return JsonResponse
      */
     public function projectReopened()

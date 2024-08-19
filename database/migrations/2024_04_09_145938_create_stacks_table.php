@@ -19,6 +19,7 @@ return new class extends Migration
         });
 
         Schema::create('project_stack', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('stack_id');
 

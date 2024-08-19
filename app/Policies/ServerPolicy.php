@@ -63,7 +63,7 @@ class ServerPolicy
      */
     public function forceDelete(User $user, Server $server): bool
     {
-        return $user->can('force_delete_server');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class ServerPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_server');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class ServerPolicy
      */
     public function restore(User $user, Server $server): bool
     {
-        return $user->can('restore_server');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class ServerPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_server');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class ServerPolicy
      */
     public function replicate(User $user, Server $server): bool
     {
-        return $user->can('replicate_server');
+        return $user->can('{{ Replicate }}');
     }
 
     /**

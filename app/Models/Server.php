@@ -17,7 +17,8 @@ class Server extends Model
         'ssh_protected' => 'Защита SSH',
         'has_admin_user' => 'Создан пользователь admin',
         'set_admin_password' => 'Создан пароль пользователю admin',
-        'set_root_password' => 'Изменён пароль по-умолчанию для root'
+        'set_root_password' => 'Изменён пароль по-умолчанию для root',
+        'has_backup' => 'Настроено резервное копирование'
     ];
 
     protected function casts(): array

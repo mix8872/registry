@@ -5,14 +5,17 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CommonRelationManagers\ProjectsRelationManager;
 use App\Filament\Resources\StackResource\Pages;
 use App\Filament\Resources\StackResource\RelationManagers;
+use App\Livewire\ListProjects;
+use App\Models\Project;
 use App\Models\Stack;
 use Filament\Forms;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StackResource extends Resource
 {
@@ -33,6 +36,9 @@ class StackResource extends Resource
                 Forms\Components\ToggleButtons::make('type')
                     ->options(Stack::$types)->inline()
                     ->required()->label('Тип'),
+                Forms\Components\Livewire::make(ListProjects::class, ['model' => $form->model, 'operation' => $form->getOperation()])
+                    ->columnSpanFull()
+                ->label('Проекты'),
             ]);
     }
 
@@ -53,8 +59,8 @@ class StackResource extends Resource
                 // ...
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->slideOver()->modalWidth(MaxWidth::SevenExtraLarge),
+                Tables\Actions\EditAction::make()->modal()->modalWidth(MaxWidth::SevenExtraLarge),
                 Tables\Actions\DeleteAction::make()->requiresConfirmation(),
             ])
             ->bulkActions([
@@ -68,7 +74,7 @@ class StackResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ProjectsRelationManager::class
+//            ProjectsRelationManager::class
         ];
     }
 
@@ -77,7 +83,7 @@ class StackResource extends Resource
         return [
             'index' => Pages\ListStacks::route('/'),
             'create' => Pages\CreateStack::route('/create'),
-            'edit' => Pages\EditStack::route('/{record}/edit'),
+//            'edit' => Pages\EditStack::route('/{record}/edit'),
         ];
     }
 

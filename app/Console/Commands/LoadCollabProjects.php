@@ -42,6 +42,7 @@ class LoadCollabProjects extends Command
 
             $this->line('Сверка архивных проектов');
             $projects = $client->get('projects/archive')->getJson();
+
             $this->withProgressBar($projects, function ($project) {
                 if ($project = Project::firstWhere(['crm_id' => $project['id']])) {
                     $project->status = Project::STATUS_ARCHIVED;

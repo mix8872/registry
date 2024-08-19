@@ -63,7 +63,7 @@ class RepositoryPolicy
      */
     public function forceDelete(User $user, Repository $repository): bool
     {
-        return $user->can('force_delete_repository');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class RepositoryPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_repository');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class RepositoryPolicy
      */
     public function restore(User $user, Repository $repository): bool
     {
-        return $user->can('restore_repository');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class RepositoryPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_repository');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class RepositoryPolicy
      */
     public function replicate(User $user, Repository $repository): bool
     {
-        return $user->can('replicate_repository');
+        return $user->can('{{ Replicate }}');
     }
 
     /**

@@ -22,6 +22,7 @@ class ExceptionMiddleware
             'success' => false,
             'message' => $e->getMessage()
         ];
+
         $errCode = $e->getCode();
         $errCode = $errCode < 600 && $errCode >= 200 ? $errCode : 500;
 

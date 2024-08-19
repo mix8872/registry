@@ -63,7 +63,7 @@ class StackPolicy
      */
     public function forceDelete(User $user, Stack $stack): bool
     {
-        return $user->can('force_delete_stack');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class StackPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_stack');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class StackPolicy
      */
     public function restore(User $user, Stack $stack): bool
     {
-        return $user->can('restore_stack');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class StackPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_stack');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class StackPolicy
      */
     public function replicate(User $user, Stack $stack): bool
     {
-        return $user->can('replicate_stack');
+        return $user->can('{{ Replicate }}');
     }
 
     /**

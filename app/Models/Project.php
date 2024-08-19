@@ -82,9 +82,9 @@ class Project extends Model
      * Создание проекта на основе данных из ActiveCollab
      *
      * @param array $payload Массив с данными о проекте из ActiveCollab
-     * @return void
+     * @return Project
      */
-    public static function makeFromCollab(array $payload): void
+    public static function makeFromCollab(array $payload): Project
     {
         $host = config('services.collab.host');
         $user = User::firstOrCreate(['email' => $payload['created_by_email']], [
@@ -107,5 +107,7 @@ class Project extends Model
             $projectModel->update($attributes);
         }
         $projectModel->save();
+
+        return $projectModel;
     }
 }

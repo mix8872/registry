@@ -63,7 +63,7 @@ class ContainerPolicy
      */
     public function forceDelete(User $user, Container $container): bool
     {
-        return $user->can('force_delete_container');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class ContainerPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_container');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class ContainerPolicy
      */
     public function restore(User $user, Container $container): bool
     {
-        return $user->can('restore_container');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class ContainerPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_container');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class ContainerPolicy
      */
     public function replicate(User $user, Container $container): bool
     {
-        return $user->can('replicate_container');
+        return $user->can('{{ Replicate }}');
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Filament\Resources\CommonRelationManagers\ProjectsRelationManager;
 use App\Filament\Resources\CommonRelationManagers\RepositoriesRelationManager;
 use App\Filament\Resources\ServerResource\Pages;
 use App\Filament\Resources\ServerResource\RelationManagers;
+use App\Livewire\ListAddresses;
 use App\Models\Server;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
@@ -30,7 +31,7 @@ class ServerResource extends Resource
 
     public static function form(Form $form): Form
     {
-        return $form->schema(self::getFormFields());
+        return $form->schema(self::getFormFields($form));
     }
 
     public static function table(Table $table): Table
@@ -46,8 +47,12 @@ class ServerResource extends Resource
                     ->label('Сервер за NAT'),
                 Tables\Columns\TextColumn::make('creds_url')
                     ->url(fn(Model $r) => $r->creds_url, true)
-                    ->getStateUsing(fn () => 'Перейти')
+                    ->getStateUsing(fn() => 'Перейти')
                     ->label('Доступы'),
+                Tables\Columns\TextColumn::make('last_updated_at')
+                    ->description(fn(Model $r) => $r->updatedBy->name)
+                    ->sortable()->dateTime()
+                    ->label('Последнее обновление'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->description(fn(Model $r) => $r->createdBy->name)
                     ->sortable()->dateTime()
@@ -91,6 +96,22 @@ class ServerResource extends Resource
                                 fn(Builder $query, $date): Builder => $query->whereDate('updated_at', '<=', $date),
                             );
                     }),
+                Filter::make('last_updated_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Обновление от'),
+                        DatePicker::make('created_until')->label('Обновление до'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('last_updated_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('last_updated_at', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -130,7 +151,7 @@ class ServerResource extends Resource
         return static::getModel()::count();
     }
 
-    public static function getFormFields()
+    public static function getFormFields($form)
     {
         return [
             Forms\Components\TextInput::make('name')->required()->maxLength(255)->label('Название'),
@@ -148,18 +169,19 @@ class ServerResource extends Resource
                     Action::make('open_vault')
                         ->icon('heroicon-o-arrow-up-right')
                         ->iconButton()
-                        ->hidden(fn(Server $r) => !onfig('services.vault.host') || $r->creds_url)
+                        ->hidden(fn(Server $r) => config('services.vault.host') || $r->creds_url)
                         ->url(fn(Server $r) => onfig('services.vault.host'), true)
                         ->label('Открыть vault')
                 )
                 ->label('Доступы'),
             Forms\Components\Toggle::make('is_public_nat')->label('Сервер за NAT'),
             Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
+            Forms\Components\DatePicker::make('last_updated_at')->label('Дата последнего обновления'),
             Forms\Components\CheckboxList::make('checklist')
                 ->options(Server::$checklistOptions)
                 ->columns(2)
 //                ->columnSpanFull()
-                ->label('Чеклист')
+                ->label('Чеклист'),
         ];
     }
 }

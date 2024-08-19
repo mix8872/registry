@@ -7,6 +7,10 @@ use App\Filament\Widgets\ContainersOverview;
 use App\Filament\Widgets\ProjectsOverview;
 use App\Filament\Widgets\RepositoriesOverview;
 use App\Filament\Widgets\ServersOverview;
+use App\Models\SocialiteUser;
+use App\Models\User;
+use BezhanSalleh\FilamentShield\FilamentShield;
+use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -21,7 +25,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use DutchCodingCompany\FilamentSocialite\Provider;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -51,8 +57,39 @@ class AdminPanelProvider extends PanelProvider
                 ServersOverview::class,
             ])
             ->plugins([
-                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make()
+                \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ])
+            ->plugin(
+                FilamentSocialitePlugin::make()
+                    // (required) Add providers corresponding with providers in `config/services.php`.
+                    ->providers([
+                        Provider::make('authentik')
+                            ->label('GRCH')
+//                            ->icon('fab-gitlab')
+                            ->color(Color::hex('#2f2a6b'))
+                            ->outlined(false)
+                            ->stateless(false)
+//                            ->scopes(['...'])
+//                            ->with(['...']),
+                    ])
+                    ->registration(true)
+                    ->createUserUsing(function (string $provider, \SocialiteProviders\Manager\OAuth2\User $oauthUser, FilamentSocialitePlugin $plugin) {
+                        $query = (new User())->query();
+                        $userObj = $query->create([
+                            'name' => $oauthUser->getName(),
+                            'email' => $oauthUser->getEmail(),
+                            'password' => Hash::make($oauthUser->token)
+                        ]);
+
+                        foreach ($oauthUser->attributes['groups'] as $role) {
+                            FilamentShield::createRole($role);
+                        }
+                        $userObj->syncRoles(...$oauthUser->attributes['groups']);
+
+                        return $userObj;
+                    })
+//                    ->socialiteUserModelClass(SocialiteUser::class)
+            )
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

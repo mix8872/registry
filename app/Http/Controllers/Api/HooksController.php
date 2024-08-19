@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Classes\ActiveCollabHooks;
+use InvalidArgumentException;
 use Illuminate\Routing\Controller;
 
 class HooksController extends Controller
@@ -14,7 +15,8 @@ class HooksController extends Controller
             empty($data['type']),
             empty($data['payload']),
             !isset(ActiveCollabHooks::$events[$data['type']]),
-            !method_exists(ActiveCollabHooks::class, lcfirst($data['type'])) => response()->json(['success' => false], 400),
+            !method_exists(ActiveCollabHooks::class, lcfirst($data['type']))
+            => throw new InvalidArgumentException('Invalid data', 400),
             default => (new ActiveCollabHooks($data))->{lcfirst($data['type'])}()
         };
     }

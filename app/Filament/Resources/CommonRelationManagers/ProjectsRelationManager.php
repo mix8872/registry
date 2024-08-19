@@ -4,12 +4,9 @@ namespace App\Filament\Resources\CommonRelationManagers;
 
 use App\Filament\Resources\ProjectResource;
 use App\Models\Project;
-use Filament\Forms;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
-use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Table;
 
 class ProjectsRelationManager extends RelationManager
@@ -44,13 +41,16 @@ class ProjectsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()->preloadRecordSelect()->color('primary'),
-                Tables\Actions\CreateAction::make()->color('gray'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DetachBulkAction::make(),
+                ]),
             ]);
     }
 }

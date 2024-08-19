@@ -24,7 +24,7 @@ class ServersRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        return $form->schema(array_merge(self::getRepositoryPivotFields(), ServerResource::getFormFields()));
+        return $form->schema(array_merge(self::getRepositoryPivotFields(), ServerResource::getFormFields($form)));
     }
 
     public function table(Table $table): Table
@@ -50,7 +50,7 @@ class ServersRelationManager extends RelationManager
                     ->preloadRecordSelect()
                     ->color('primary'),
                 CreateAction::make()
-                    ->form(fn(CreateAction $action): array => array_merge(self::getRepositoryPivotFields(), ServerResource::getFormFields()))
+                    ->form(fn(CreateAction $action, Form $form): array => array_merge(self::getRepositoryPivotFields(), ServerResource::getFormFields($form)))
                     ->color('gray'),
             ])
             ->actions([

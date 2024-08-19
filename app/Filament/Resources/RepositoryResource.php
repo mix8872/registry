@@ -138,27 +138,31 @@ class RepositoryResource extends Resource
         return [
             Forms\Components\TextInput::make('name')
                 ->required()
-                ->maxLength(255)->label('Название'),
+                ->maxLength(255)
+                ->label('Название'),
             Forms\Components\Select::make('project_id')
                 ->relationship(name: 'project', titleAttribute: 'name')
-                ->required()->label('Проект')
+                ->preload()
+                ->required()
                 ->searchable()
                 ->suffixAction(
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')
                         ->iconButton()
                         ->url(fn(Repository $r) => $r->project_id ? "/registry/projects/{$r->project_id}/edit" : null, true)
-                ),
+                )
+                ->label('Проект'),
             Forms\Components\TextInput::make('url')
                 ->url()
                 ->required()
-                ->maxLength(255)->label('Ссылка')
+                ->maxLength(255)
                 ->suffixAction(
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')
                         ->iconButton()
                         ->url(fn(Repository $r) => $r->url, true)
-                ),
+                )
+                ->label('Ссылка'),
             Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
         ];
     }
