@@ -7,7 +7,8 @@
     "require": {
         "php": "^8.2",
         "activecollab/activecollab-feather-sdk": "^3.1",
-        "bezhansalleh/filament-shield": "^3.2",
+        "bezhansalleh/filament-shield": "^3",
+        "coolsam/modules": "^4",
         "chelout/laravel-relationship-events": "^3.0",
         "dutchcodingcompany/filament-socialite": "^2.2",
         "filament/actions": "^3.2",
@@ -66,6 +67,11 @@
     "extra": {
         "laravel": {
             "dont-discover": []
+        },
+        "merge-plugin": {
+            "include": [
+                "Modules/*/composer.json"
+            ]
         }
     },
     "config": {
@@ -74,7 +80,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true
         }
     },
     "minimum-stability": "stable",

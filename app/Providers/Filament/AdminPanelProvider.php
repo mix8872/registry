@@ -7,9 +7,9 @@ use App\Filament\Widgets\ContainersOverview;
 use App\Filament\Widgets\ProjectsOverview;
 use App\Filament\Widgets\RepositoriesOverview;
 use App\Filament\Widgets\ServersOverview;
-use App\Models\SocialiteUser;
 use App\Models\User;
 use BezhanSalleh\FilamentShield\FilamentShield;
+use Coolsam\Modules\ModulesPlugin;
 use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -44,11 +44,12 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/registry_logo.png'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
             ->pages([
                 Pages\Dashboard::class,
             ])
             ->maxContentWidth(MaxWidth::Full)
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
 //                Widgets\AccountWidget::class,
 //                Widgets\FilamentInfoWidget::class,
@@ -60,6 +61,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 \BezhanSalleh\FilamentShield\FilamentShieldPlugin::make(),
             ])
+            ->plugin(ModulesPlugin::make())
             ->plugin(
                 FilamentSocialitePlugin::make()
                     // (required) Add providers corresponding with providers in `config/services.php`.
@@ -106,6 +108,7 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->unsavedChangesAlerts()
-            ->databaseTransactions();
+            ->databaseTransactions()
+            ->topNavigation();
     }
 }

@@ -19,19 +19,22 @@ class ListProjects extends Component implements HasForms, HasTable
     use InteractsWithForms;
     use InteractsWithTable;
 
-    public Model $model;
+    public string|Model $model;
     public string $operation;
+    private bool $disabled = false;
+
 
     public function mount($model, string $operation): void
     {
-        $this->model = $model;
+        $this->model = is_string($model) ? new $model() : $model;
         $this->operation = $operation;
+        $this->disabled = !$this->model->id;
     }
 
     public function table(Table $table): Table
     {
         return $table
-            ->relationship(fn(): BelongsToMany => $this->model->projects())
+            ->relationship(fn(): BelongsToMany => $this->model->projects()) //показывать только связанные проекты
             ->recordTitleAttribute('name')
             ->searchable(false)
             ->heading('Проекты')
@@ -39,7 +42,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()->sortable()
                     ->description(fn(Model $r) => $r->comment)
-                    ->url(fn(Project $r) => $r ? "/registry/projects/{$r->id}" : null, true)
+                    ->url(fn(Project $r) => $r ? "/registry/structure/projects/{$r->id}" : null, true)
                     ->label('Название'),
                 Tables\Columns\SelectColumn::make('status')->selectablePlaceholder(false)
                     ->disabled()
@@ -65,6 +68,6 @@ class ListProjects extends Component implements HasForms, HasTable
 
     public function render(): View
     {
-        return view('livewire.list-projects');
+        return view('livewire.table');
     }
 }

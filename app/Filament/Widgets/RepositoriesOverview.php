@@ -21,7 +21,7 @@ class RepositoriesOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Repository $r) => $r->comment)
-                    ->url(fn(Repository $r): string|null => "/registry/repositories/{$r->id}", true)
+                    ->url(fn(Repository $r): string|null => "/registry/structure/repositories/{$r->id}", true)
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('url')
                     ->url(fn(Repository $r): string => $r->url ?? '', true)

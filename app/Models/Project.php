@@ -6,11 +6,10 @@ use App\Traits\HasOwner;
 use Illuminate\Database\Eloquent\Concerns\HasEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 class Project extends Model
 {
@@ -19,11 +18,39 @@ class Project extends Model
     use HasOwner;
 
     public const STATUS_ACTIVE = 'active';
+    public const STATUS_SUPPORT = 'support';
     public const STATUS_ARCHIVED = 'archived';
+
+    public const PAYMENT_TM = 'tm';
+    public const PAYMENT_FIX = 'fix';
+
+    public const PAYMENT_PERIOD_MONTH = 'month';
+    public const PAYMENT_PERIOD_STEP = 'step';
+    public const PAYMENT_PERIOD_ONCE = 'once';
+
+    public const LEGAL_LTD = 'ltd';
+    public const LEGAL_IE = 'ie';
 
     public static array $statuses = [
         self::STATUS_ACTIVE => 'Активен',
-        self::STATUS_ARCHIVED => 'В архиве'
+        self::STATUS_SUPPORT => 'Поддержка',
+        self::STATUS_ARCHIVED => 'Закрыт'
+    ];
+
+    public static array $payments = [
+        self::PAYMENT_FIX => 'Fix',
+        self::PAYMENT_TM => 'T&M',
+    ];
+
+    public static array $paymentPeriods = [
+        self::PAYMENT_PERIOD_STEP => 'Поэтапно',
+        self::PAYMENT_PERIOD_ONCE => 'Разово',
+        self::PAYMENT_PERIOD_MONTH => 'Ежемесячно',
+    ];
+
+    public static array $legals = [
+        self::LEGAL_IE => 'ИП',
+        self::LEGAL_LTD => 'ООО'
     ];
 
     public $fillable = [
@@ -50,6 +77,16 @@ class Project extends Model
     public function servers(): BelongsToMany
     {
         return $this->belongsToMany(Server::class);
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function workType(): BelongsTo
+    {
+        return $this->belongsTo(WorkType::class);
     }
 
     /**

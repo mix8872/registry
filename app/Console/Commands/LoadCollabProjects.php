@@ -17,7 +17,7 @@ class LoadCollabProjects extends Command
      *
      * @var string
      */
-    protected $signature = 'app:load-collab-projects';
+    protected $signature = 'structure:load-collab-projects';
 
     /**
      * The console command description.
@@ -36,6 +36,10 @@ class LoadCollabProjects extends Command
             $this->line('Начало импорта проектов');
             $this->line('Получение проектов');
             $projects = $client->get('projects')->getJson();
+            if (isset($projects['message'])) {
+                $this->line($projects['message']);
+                return;
+            }
             $this->withProgressBar($projects, function ($project) {
                 Project::makeFromCollab($project);
             });
