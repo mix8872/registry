@@ -49,11 +49,11 @@ class FinanceResResource extends Resource
                 Tables\Columns\TextColumn::make('cost_in')
                     ->searchable()->sortable()
                     ->numeric()
-                    ->label('Внутрення стоимость'),
+                    ->label('Стоимость внутрення'),
                 Tables\Columns\TextColumn::make('cost_out')
                     ->searchable()->sortable()
                     ->numeric()
-                    ->label('Внешняя стоимость'),
+                    ->label('Стоимость внешняя'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()->dateTime()
                     ->label('Создано'),

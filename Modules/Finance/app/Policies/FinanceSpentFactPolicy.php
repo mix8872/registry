@@ -3,10 +3,10 @@
 namespace Modules\Finance\Policies;
 
 use App\Models\User;
-use Modules\Finance\Models\FinanceRes;
+use Modules\Finance\Models\FinanceSpentFact;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class FinanceResPolicy
+class FinanceSpentFactPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class FinanceResPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_finance::res');
+        return $user->can('view_any_finance::spent::fact');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, FinanceRes $financeRes): bool
+    public function view(User $user, FinanceSpentFact $financeSpentFact): bool
     {
-        return $user->can('view_finance::res');
+        return $user->can('view_finance::spent::fact');
     }
 
     /**
@@ -31,23 +31,23 @@ class FinanceResPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_finance::res');
+        return $user->can('create_finance::spent::fact');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, FinanceRes $financeRes): bool
+    public function update(User $user, FinanceSpentFact $financeSpentFact): bool
     {
-        return $user->can('update_finance::res');
+        return $user->can('update_finance::spent::fact');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, FinanceRes $financeRes): bool
+    public function delete(User $user, FinanceSpentFact $financeSpentFact): bool
     {
-        return $user->can('delete_finance::res');
+        return $user->can('delete_finance::spent::fact');
     }
 
     /**
@@ -55,13 +55,13 @@ class FinanceResPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_finance::res');
+        return $user->can('delete_any_finance::spent::fact');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, FinanceRes $financeRes): bool
+    public function forceDelete(User $user, FinanceSpentFact $financeSpentFact): bool
     {
         return $user->can('{{ ForceDelete }}');
     }
@@ -77,7 +77,7 @@ class FinanceResPolicy
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, FinanceRes $financeRes): bool
+    public function restore(User $user, FinanceSpentFact $financeSpentFact): bool
     {
         return $user->can('{{ Restore }}');
     }
@@ -93,7 +93,7 @@ class FinanceResPolicy
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, FinanceRes $financeRes): bool
+    public function replicate(User $user, FinanceSpentFact $financeSpentFact): bool
     {
         return $user->can('{{ Replicate }}');
     }
@@ -103,6 +103,6 @@ class FinanceResPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_finance::res');
+        return $user->can('reorder_finance::spent::fact');
     }
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Finance\Policies;
+namespace App\Policies;
 
 use App\Models\User;
-use Modules\Finance\Models\FinanceRes;
+use App\Models\Customer;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class FinanceResPolicy
+class CustomerPolicy
 {
     use HandlesAuthorization;
 
@@ -15,15 +15,15 @@ class FinanceResPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->can('view_any_finance::res');
+        return $user->can('view_any_customer');
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, FinanceRes $financeRes): bool
+    public function view(User $user, Customer $customer): bool
     {
-        return $user->can('view_finance::res');
+        return $user->can('view_customer');
     }
 
     /**
@@ -31,23 +31,23 @@ class FinanceResPolicy
      */
     public function create(User $user): bool
     {
-        return $user->can('create_finance::res');
+        return $user->can('create_customer');
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, FinanceRes $financeRes): bool
+    public function update(User $user, Customer $customer): bool
     {
-        return $user->can('update_finance::res');
+        return $user->can('update_customer');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, FinanceRes $financeRes): bool
+    public function delete(User $user, Customer $customer): bool
     {
-        return $user->can('delete_finance::res');
+        return $user->can('delete_customer');
     }
 
     /**
@@ -55,13 +55,13 @@ class FinanceResPolicy
      */
     public function deleteAny(User $user): bool
     {
-        return $user->can('delete_any_finance::res');
+        return $user->can('delete_any_customer');
     }
 
     /**
      * Determine whether the user can permanently delete.
      */
-    public function forceDelete(User $user, FinanceRes $financeRes): bool
+    public function forceDelete(User $user, Customer $customer): bool
     {
         return $user->can('{{ ForceDelete }}');
     }
@@ -77,7 +77,7 @@ class FinanceResPolicy
     /**
      * Determine whether the user can restore.
      */
-    public function restore(User $user, FinanceRes $financeRes): bool
+    public function restore(User $user, Customer $customer): bool
     {
         return $user->can('{{ Restore }}');
     }
@@ -93,7 +93,7 @@ class FinanceResPolicy
     /**
      * Determine whether the user can replicate.
      */
-    public function replicate(User $user, FinanceRes $financeRes): bool
+    public function replicate(User $user, Customer $customer): bool
     {
         return $user->can('{{ Replicate }}');
     }
@@ -103,6 +103,6 @@ class FinanceResPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_finance::res');
+        return $user->can('reorder_customer');
     }
 }
