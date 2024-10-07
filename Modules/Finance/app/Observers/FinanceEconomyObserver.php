@@ -35,18 +35,25 @@ class FinanceEconomyObserver
                     return;
             }
 
-            $facts = FinanceSpentFact::makeFromCollab($project, $records['time_records'], $records['related']['Task'])
+            FinanceSpentFact::makeFromCollab($project, $records['time_records'], $records['related']['Task'])
                 ->groupBy('finance_res_id');
+
+            $facts = $r->facts->groupBy('finance_res_id');
 
             foreach ($rates as $rate) {
                 if (!isset($facts[$rate['id']])) {
                     continue;
                 }
 
-                $spentCount = round($facts[$rate['id']]->sum('count') / 3600);
+                $spentCount = round($facts[$rate['id']]->sum('count'));
                 $soldCount = $rate['sold'];
-                $priceIn = ($spentCount / 3600) * $rate['in'];
+                $priceIn = $spentCount / 3600 * $rate['in'];
                 $priceOut = $soldCount * $rate['out'];
+
+                if (!$priceOut) {
+                    continue;
+                }
+
                 $spents[] = [
                     'finance_res_id' => $rate['id'],
                     'sold_count' => $soldCount,

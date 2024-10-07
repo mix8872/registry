@@ -11,12 +11,12 @@ class FinanceRes extends Model
     use HasFactory;
 
     public const TYPE_INTERNAL = 'internal';
-    public const TYPE_EXTERNAL = 'external';
+    public const TYPE_OTHER = 'other';
     public const TYPE_LICENSE = 'license';
 
     public static $types = [
         self::TYPE_INTERNAL => 'Внутренний',
-        self::TYPE_EXTERNAL => 'Внешний',
+        self::TYPE_OTHER => 'Внешний',
         self::TYPE_LICENSE => 'Лицензия'
     ];
 

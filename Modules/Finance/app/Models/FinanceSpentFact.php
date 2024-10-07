@@ -37,15 +37,19 @@ class FinanceSpentFact extends Model
         return $this->belongsTo(Project::class);
     }
 
-   /* protected function getCountAttribute(): string
-    {
-        return date('H:i', $this->attributes['count']);
-    }*/
+    /* protected function getCountAttribute(): string
+     {
+         return date('H:i', $this->attributes['count']);
+     }*/
 
     protected function setCountAttribute($value)
     {
-        sscanf($value, "%d:%d", $hours, $minutes);
-        $this->attributes['count'] = $hours * 3600 + $minutes * 60;
+        if (is_string($value)) {
+            sscanf($value, "%d:%d", $hours, $minutes);
+            $this->attributes['count'] = $hours * 3600 + $minutes * 60;
+        } else {
+            $this->attributes['count'] = $value;
+        }
     }
 
     /**
@@ -54,7 +58,7 @@ class FinanceSpentFact extends Model
      * @param Project $project
      * @param array $records
      * @param array $tasks
-     * @return array
+     * @return Collection
      */
     public static function makeFromCollab(Project $project, array $records, array $tasks): Collection
     {
@@ -68,7 +72,7 @@ class FinanceSpentFact extends Model
                     'project_id' => $project->id,
                     'crm_id' => $record['id'],
                     'date' => date("Y-m-d H:i:s", $record['record_date']),
-                    'count' => round($record['value'] * 3600),
+                    'count' => (int)round($record['value'] * 3600),
                     'finance_res_id' => $resources[$record['job_type_id']]->id,
                     'task_url' => $task ? "{$host}{$task['url_path']}" : '',
                     'comment' => $record['summary'],

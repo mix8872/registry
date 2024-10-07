@@ -2,11 +2,9 @@
 
 namespace Modules\Finance\Filament\Clusters\Finance\Resources;
 
-use Illuminate\Database\Eloquent\Model;
 use Modules\Finance\Filament\Clusters\Finance;
 use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\Pages;
 use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\RelationManagers;
-use Modules\Finance\Liveware\ListSpentData;
 use Modules\Finance\Models\FinanceEconomy;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -79,21 +77,36 @@ class FinanceEconomiesResource extends Resource
                 ->schema([
                     Forms\Components\TextInput::make("rates.{$resource->name}.sold")
                         ->numeric()
+                        ->placeholder(0)
                         ->default(0)
                         ->required()
+                        ->extraInputAttributes(['onClick' => 'this.select()'])
                         ->label("Продано часов"),
                     Forms\Components\TextInput::make("rates.{$resource->name}.in")
                         ->numeric()
+                        ->placeholder($resource->cost_in)
                         ->default($resource->cost_in)
                         ->required()
+                        ->extraInputAttributes(['onClick' => 'this.select()'])
+                        ->afterStateHydrated(function (Forms\Components\TextInput $component, string|null $state) use ($resource) {
+                            $component->state($state ?? $resource->cost_in);
+                        })
                         ->label("Стоимость внутренняя"),
                     Forms\Components\TextInput::make("rates.{$resource->name}.out")
                         ->numeric()
+                        ->placeholder($resource->cost_out)
                         ->default($resource->cost_out)
                         ->required()
+                        ->extraInputAttributes(['onClick' => 'this.select()'])
+                        ->afterStateHydrated(function (Forms\Components\TextInput $component, string|null $state) use ($resource) {
+                            $component->state($state ?? $resource->cost_out);
+                        })
                         ->label("Стоимость внешняя"),
                     Forms\Components\Hidden::make("rates.{$resource->name}.id")
                         ->default($resource->id)
+                        ->afterStateHydrated(function (Forms\Components\Hidden $component, string|null $state) use ($resource) {
+                            $component->state($state ?? $resource->id);
+                        })
                 ])
 //                ->collapsed()
                 ->columns(3)
