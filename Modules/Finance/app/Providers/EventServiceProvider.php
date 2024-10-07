@@ -4,7 +4,10 @@ namespace Modules\Finance\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Modules\Finance\Models\FinanceEconomy;
+use Modules\Finance\Models\FinanceRes;
+use Modules\Finance\Models\FinanceSpentFact;
 use Modules\Finance\Observers\FinanceEconomyObserver;
+use Modules\Finance\Observers\FinanceSpentFactObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -25,6 +28,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         FinanceEconomy::observe(FinanceEconomyObserver::class);
+        FinanceSpentFact::observe(FinanceSpentFactObserver::class);
     }
 
     /**

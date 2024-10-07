@@ -44,7 +44,11 @@ class SpentsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('rate_in')->money('RUB')->label('Цена внутренняя'),
                 Tables\Columns\TextColumn::make('rate_out')->money('RUB')->label('Цена внешняя'),
                 Tables\Columns\TextColumn::make('sold_count')->label('Часов продано'),
-                Tables\Columns\TextColumn::make('spent_count')->time('H:i')->label('Часов потрачено'),
+                Tables\Columns\TextColumn::make('spent_count')
+                    ->state(function (FinanceEconomySpent $r): string {
+                        return round($r->spent_count / 3600);
+                    })
+                    ->label('Часов потрачено'),
                 Tables\Columns\TextColumn::make('relation')->numeric()->suffix('%')
                     ->label('Соотношение'),
                 Tables\Columns\TextColumn::make('price_in')->money('RUB')

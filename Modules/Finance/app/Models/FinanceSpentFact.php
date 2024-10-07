@@ -6,6 +6,7 @@ use App\Models\Project;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 // use Modules\Finance\Database\Factories\FinanceSpentFactFactory;
@@ -35,6 +36,11 @@ class FinanceSpentFact extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    public function spents(): HasMany
+    {
+        return $this->hasMany(FinanceEconomySpent::class, 'finance_res_id', 'finance_res_id');
     }
 
     /* protected function getCountAttribute(): string

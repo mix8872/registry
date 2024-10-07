@@ -156,6 +156,8 @@ class FinanceSpentFactResource extends Resource
                 ->label('Ресурс'),
             Forms\Components\Select::make('project_id')
                 ->relationship('project', 'name')
+                ->searchable()
+                ->preload()
                 ->required()
                 ->label('Проект'),
             Forms\Components\DatePicker::make('date')

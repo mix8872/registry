@@ -47,8 +47,8 @@ class FinanceEconomyObserver
 
                 $spentCount = round($facts[$rate['id']]->sum('count'));
                 $soldCount = $rate['sold'];
-                $priceIn = $spentCount / 3600 * $rate['in'];
-                $priceOut = $soldCount * $rate['out'];
+                $priceIn = round($spentCount / 3600 * $rate['in'], 2);
+                $priceOut = round($soldCount * $rate['out'], 2);
 
                 if (!$priceOut) {
                     continue;
