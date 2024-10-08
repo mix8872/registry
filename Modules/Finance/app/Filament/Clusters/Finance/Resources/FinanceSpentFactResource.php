@@ -50,7 +50,9 @@ class FinanceSpentFactResource extends Resource
                     ->url(fn(Model $r) => $r->task_url, true)
                     ->label('Проект'),
                 Tables\Columns\TextColumn::make('date')
-                    ->date()->label('Дата'),
+                    ->sortable()
+                    ->date()
+                    ->label('Дата'),
                 Tables\Columns\TextColumn::make('count')
                     ->description(fn(Model $r) => $r->comment)
                     ->time('H:i')

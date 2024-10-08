@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 // use Modules\Finance\Database\Factories\FinanceSpentFactFactory;
 
@@ -42,11 +43,6 @@ class FinanceSpentFact extends Model
     {
         return $this->hasMany(FinanceEconomySpent::class, 'finance_res_id', 'finance_res_id');
     }
-
-    /* protected function getCountAttribute(): string
-     {
-         return date('H:i', $this->attributes['count']);
-     }*/
 
     protected function setCountAttribute($value)
     {
@@ -90,7 +86,7 @@ class FinanceSpentFact extends Model
                 $spentFact->save();
                 $arr[] = $spentFact;
             } catch (\Error|\Exception $e) {
-                continue;
+                Log::error($e->getMessage());
             }
         }
         return collect($arr);

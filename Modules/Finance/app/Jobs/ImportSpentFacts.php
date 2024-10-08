@@ -60,7 +60,16 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
             $this->economy->setStatus(FinanceEconomy::STATUS_PROCESS, $this->job->getJobId());
 
             $client = ActiveCollabClient::make();
-            $records = $client->get("projects/{$this->project->crm_id}/time-records")->getJson();
+
+            $page = 1;
+            $records = [];
+            do {
+                $r = $client->get("projects/{$this->project->crm_id}/time-records/?page=$page")->getJson();
+                $records[] = $r;
+                $page++;
+            } while ($r['time_records']);
+            $records = array_merge_recursive(...$records);
+
             switch (true) {
                 case !$records:
                     throw new \Exception('Записи о затреканном времени не получены');
