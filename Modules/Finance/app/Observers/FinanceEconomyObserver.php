@@ -16,11 +16,8 @@ class FinanceEconomyObserver
 {
     public function saved(Model $r)
     {
-//        $rates = $r->rates;
-//        $spents = [];
         try {
-            if (!in_array($r->status, [FinanceEconomy::STATUS_PROCESS, FinanceEconomy::STATUS_DONE])) {
-                Log::info("{$r->project->name} - $r->id - {$r->status}");
+            if (!in_array($r->status, [FinanceEconomy::STATUS_PROCESS])) {
                 ImportSpentFacts::dispatch($r->project_id, $r->id);
             }
 
@@ -31,7 +28,15 @@ class FinanceEconomyObserver
             }
 
             $client = ActiveCollabClient::make();
-            $records = $client->get("projects/{$project->crm_id}/time-records")->getJson();
+
+            $page = 1;
+            $records = [];
+            do {
+                $r = $client->get("projects/{$project->crm_id}/time-records/?page=$page")->getJson();
+                $records[] = $r;
+                $page++;
+            } while ($r['time_records']);
+            $records = array_merge_recursive(...$records);
 
             switch (true) {
                 case !$records:
@@ -45,7 +50,8 @@ class FinanceEconomyObserver
             FinanceSpentFact::makeFromCollab($project, $records['time_records'], $records['related']['Task']);
 
             $facts = $r->facts->groupBy('finance_res_id');
-
+            $rates = $r->rates;
+            $spents = [];
             foreach ($rates as $rate) {
                 if (!isset($facts[$rate['id']])) {
                     continue;
