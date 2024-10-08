@@ -7,6 +7,8 @@ use App\Models\Project;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
+use Modules\Finance\Jobs\ImportSpentFacts;
+use Modules\Finance\Models\FinanceEconomy;
 use Modules\Finance\Models\FinanceEconomySpent;
 use Modules\Finance\Models\FinanceSpentFact;
 
@@ -14,10 +16,15 @@ class FinanceEconomyObserver
 {
     public function saved(Model $r)
     {
-        $rates = $r->rates;
-        $spents = [];
+//        $rates = $r->rates;
+//        $spents = [];
         try {
-            $r->spents()->delete();
+            if (!in_array($r->status, [FinanceEconomy::STATUS_PROCESS, FinanceEconomy::STATUS_DONE])) {
+                Log::info("{$r->project->name} - $r->id - {$r->status}");
+                ImportSpentFacts::dispatch($r->project_id, $r->id);
+            }
+
+            /*$r->spents()->delete();
 
             if (!$project = Project::find($r->project_id)) {
                 throw new \Exception("Проект c id {$r->id} не найден");
@@ -35,8 +42,7 @@ class FinanceEconomyObserver
                     return;
             }
 
-            FinanceSpentFact::makeFromCollab($project, $records['time_records'], $records['related']['Task'])
-                ->groupBy('finance_res_id');
+            FinanceSpentFact::makeFromCollab($project, $records['time_records'], $records['related']['Task']);
 
             $facts = $r->facts->groupBy('finance_res_id');
 
@@ -66,7 +72,7 @@ class FinanceEconomyObserver
                     'profit' => $priceOut - $priceIn
                 ];
             }
-            $r->spents()->createMany($spents);
+            $r->spents()->createMany($spents);*/
         } catch (\Error|\Exception $e) {
             Notification::make()
                 ->title($e->getMessage())

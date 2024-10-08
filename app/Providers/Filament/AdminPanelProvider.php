@@ -91,7 +91,13 @@ class AdminPanelProvider extends PanelProvider
 
                         return $userObj;
                     })
-//                    ->socialiteUserModelClass(SocialiteUser::class)
+                    ->authorizeUserUsing(function (FilamentSocialitePlugin $plugin, \SocialiteProviders\Manager\OAuth2\User $oauthUser) {
+                        $user = User::where('email', $oauthUser->email)->first();
+                        foreach ($oauthUser->attributes['groups'] as $role) {
+                            FilamentShield::createRole($role);
+                        }
+                        return (bool)$user->syncRoles(...$oauthUser->attributes['groups']);
+                    })
             )
             ->middleware([
                 EncryptCookies::class,

@@ -33,6 +33,7 @@ class SpentsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('Итог')
+            ->striped()
             ->groups([
                 Group::make('resource.type')
                     ->getTitleFromRecordUsing(fn(FinanceEconomySpent $record): string => FinanceRes::$types[$record->resource->type])

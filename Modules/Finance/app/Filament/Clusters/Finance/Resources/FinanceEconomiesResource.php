@@ -34,7 +34,15 @@ class FinanceEconomiesResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('project.name')
-                    ->label('Проект')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Проект'),
+                Tables\Columns\TextColumn::make('status')
+                    ->sortable()
+                    ->state(function (FinanceEconomy $r): string {
+                        return FinanceEconomy::$statuses[$r->status];
+                    })
+                    ->label('Статус')
             ])
             ->filters([
                 //
@@ -47,7 +55,8 @@ class FinanceEconomiesResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->poll('5s');
     }
 
     public static function getRelations(): array
@@ -119,21 +128,13 @@ class FinanceEconomiesResource extends Resource
                 ->required()
                 ->searchable()
                 ->preload()
+                ->unique(ignoreRecord: true)
                 ->columnSpanFull()
                 ->label('Проект'),
             Forms\Components\Section::make("Ресурсы")
                 ->schema($fields)
                 ->collapsed()
                 ->compact(),
-            /*Forms\Components\Livewire::make(ListSpentData::class, ['model' => $form->model])
-                ->disabled(function (FinanceEconomy $r) {
-                    return !$r->exists();
-                })
-                ->hidden(function (FinanceEconomy $r) {
-                    return !$r->exists();
-                })
-                ->columnSpanFull()
-                ->label('Итог'),*/
         ];
     }
 }

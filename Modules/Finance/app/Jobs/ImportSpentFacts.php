@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Modules\Finance\Models\FinanceEconomy;
 use Modules\Finance\Models\FinanceSpentFact;
 
 class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
@@ -17,11 +18,18 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Экземпляр продукта.
+     * Экземпляр проекта.
      *
-     * @var \App\Models\Project
+     * @var \App\Models\Project|null
      */
-    public $project;
+    public Project|null $project;
+
+    /**
+     * Экземпляр отчета.
+     *
+     * @var FinanceEconomy|null
+     */
+    public FinanceEconomy|null $economy;
 
     /**
      */
@@ -33,10 +41,13 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
     /**
      * Create a new job instance.
      */
-    public function __construct($projectId)
+    public function __construct($projectId, $economyId)
     {
-        if (!$this->project = Project::find($projectId)) {
-            throw new \Exception("Проект c id {$projectId} не найден");
+        switch (true) {
+            case !$this->project = Project::find($projectId):
+                throw new \Exception("Проект c id {$projectId} не найден");
+            case !$this->economy = FinanceEconomy::find($economyId):
+                throw new \Exception("Отчеты c id {$economyId} не найден");
         }
     }
 
@@ -46,16 +57,56 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
     public function handle(): void
     {
         try {
+            $this->economy->setStatus(FinanceEconomy::STATUS_PROCESS, $this->job->getJobId());
+
             $client = ActiveCollabClient::make();
-
             $records = $client->get("projects/{$this->project->crm_id}/time-records")->getJson();
-            if (isset($records['message'])) {
-                $this->line($records['message']);
-                return;
+            switch (true) {
+                case !$records:
+                    throw new \Exception('Записи о затреканном времени не получены');
+                    $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $this->job->getJobId());
+                    return;
+                case isset($records['message']):
+                    throw new \Exception($records['message']);
+                    $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $this->job->getJobId());
+                    return;
             }
-            FinanceSpentFact::makeFromCollab($records->time_records, $records->related->Task);
+            FinanceSpentFact::makeFromCollab($this->project, $records['time_records'], $records['related']['Task']);
 
+            $facts = $this->economy->facts->groupBy('finance_res_id');
+            $rates = $this->economy->rates;
+            $this->economy->spents()->delete();
+            $spents = [];
+            foreach ($rates as $rate) {
+                if (!isset($facts[$rate['id']])) {
+                    continue;
+                }
+
+                $spentCount = round($facts[$rate['id']]->sum('count'));
+                $soldCount = $rate['sold'];
+                $priceIn = round($spentCount / 3600 * $rate['in'], 2);
+                $priceOut = round($soldCount * $rate['out'], 2);
+
+                if (!$priceOut) {
+                    continue;
+                }
+
+                $spents[] = [
+                    'finance_res_id' => $rate['id'],
+                    'sold_count' => $soldCount,
+                    'spent_count' => $spentCount,
+                    'rate_in' => $rate['in'],
+                    'rate_out' => $rate['out'],
+                    'price_in' => $priceIn,
+                    'price_out' => $priceOut,
+                    'performance' => round(($priceOut - $priceIn) / $priceOut, 2),
+                    'profit' => $priceOut - $priceIn
+                ];
+            }
+            $this->economy->spents()->createMany($spents);
+            $this->economy->setStatus(FinanceEconomy::STATUS_DONE);
         } catch (\Error|\Exception $e) {
+            $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $this->job->getJobId());
             $this->error($e->getMessage());
             if (config('app.debug')) {
                 $this->error($e->getTraceAsString());
