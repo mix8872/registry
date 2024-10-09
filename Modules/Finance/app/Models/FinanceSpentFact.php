@@ -29,6 +29,11 @@ class FinanceSpentFact extends Model
         'comment',
     ];
 
+    public function economy(): BelongsTo
+    {
+        return $this->belongsTo(FinanceEconomy::class, 'project_id', 'project_id');
+    }
+
     public function resource(): BelongsTo
     {
         return $this->belongsTo(FinanceRes::class, 'finance_res_id', 'id');

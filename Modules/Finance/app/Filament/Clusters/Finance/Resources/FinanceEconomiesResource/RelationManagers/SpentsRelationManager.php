@@ -76,6 +76,7 @@ class SpentsRelationManager extends RelationManager
                         Sum::make()
                     ])
                     ->money('RUB')->label('Доход'),
-            ]);
+            ])
+            ->poll('5s');
     }
 }
