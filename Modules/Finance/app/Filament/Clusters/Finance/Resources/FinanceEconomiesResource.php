@@ -48,8 +48,18 @@ class FinanceEconomiesResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('')->tooltip('Просмотр'),
+                Tables\Actions\EditAction::make()->label('')->tooltip('Изменить'),
+                Tables\Actions\CreateAction::make('clone')
+                    ->label('')
+                    ->color('info')
+                    ->tooltip('Клонировать')
+                    ->modalHeading(fn (FinanceEconomy $r) => "Клонировать в новый расчет экономики проекта")
+                    ->icon('mdi-content-copy')
+                    ->form(fn(Form $form) => self::form($form->model(FinanceEconomy::class)))
+                    ->fillForm(fn(FinanceEconomy $r) => [
+                        'rates' => $r->rates,
+                    ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
