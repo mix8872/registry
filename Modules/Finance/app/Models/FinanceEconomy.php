@@ -46,7 +46,7 @@ class FinanceEconomy extends Model
         return $this->hasMany(FinanceEconomySpent::class, 'finance_economy_id');
     }
 
-    public function facts(): hasMany
+    public function facts(): HasMany
     {
         return $this->hasMany(FinanceSpentFact::class, 'project_id', 'project_id');
     }
