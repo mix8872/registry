@@ -128,9 +128,9 @@ class FinanceSpentFactResource extends Resource
                     ->extraModalFooterActions(fn(Action $action): array => [
                         EditAction::make()->slideOver()->form(static::getFormFields())
                     ]),
-                Tables\Actions\EditAction::make()
+                Tables\Actions\EditAction::make()->icon('mdi-pencil')
                     ->slideOver(),
-                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -52,8 +52,8 @@ class AddressesRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil'),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -55,7 +55,7 @@ class ServersRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil'),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
