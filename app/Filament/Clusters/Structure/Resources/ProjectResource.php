@@ -192,7 +192,6 @@ class ProjectResource extends Resource
             Forms\Components\TextInput::make('client')->label('Клиент'),
             Forms\Components\Select::make('customer_id')
                 ->relationship('customer', 'name')
-//                ->selectablePlaceholder(false)
                 ->required()
                 ->searchable()
                 ->createOptionForm([
@@ -203,21 +202,20 @@ class ProjectResource extends Resource
             Forms\Components\TextInput::make('legal_customer')->label('Юрлицо заказчика'),
             Forms\Components\Select::make('legal_inner')
                 ->options(Project::$legals)
-                ->selectablePlaceholder(false)
+                ->required()
                 ->label('Юрлицо внутреннее'),
             Forms\Components\DatePicker::make('contract_date')->label('Дата заключения'),
             Forms\Components\DatePicker::make('contract_close_date')->label('Дата сдачи'),
             Forms\Components\Select::make('payment_type')
                 ->options(Project::$payments)
-                ->selectablePlaceholder(false)
+                ->required()
                 ->label('Тип оплаты'),
             Forms\Components\Select::make('payment_period')
                 ->options(Project::$paymentPeriods)
-                ->selectablePlaceholder(false)
+                ->required()
                 ->label('Периодичность оплаты'),
             Forms\Components\Select::make('work_type_id')
                 ->relationship('workType', 'name')
-//                ->selectablePlaceholder(false)
                 ->createOptionForm([
                     Forms\Components\TextInput::make('name')->required()->label('Название'),
                 ])

@@ -3,21 +3,16 @@
 namespace App\Filament\Clusters\Structure\Resources;
 
 use App\Filament\Clusters\Structure;
-use App\Filament\Clusters\Structure\Resources\CommonRelationManagers\ProjectsRelationManager;
 use App\Filament\Clusters\Structure\Resources\StackResource\Pages;
 use App\Filament\Clusters\Structure\Resources\StackResource\RelationManagers;
 use App\Livewire\ListProjects;
-use App\Models\Project;
 use App\Models\Stack;
 use Filament\Forms;
-use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 
 class StackResource extends Resource
 {

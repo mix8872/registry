@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Clusters\Structure\Resources\ProjectResource;
 use App\Models\Project;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,7 +22,7 @@ class ProjectsOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Project $r) => $r->comment)
-                    ->url(fn(Project $r): string|null => "/registry/structure/projects/{$r->id}", true)
+                    ->url(fn(Project $r): string|null => ProjectResource::getUrl('view', ['record' => $r->id]), true)
                     ->label('Название'),
                 Tables\Columns\SelectColumn::make('status')->selectablePlaceholder(false)
                     ->options(Project::$statuses)->sortable()->disabled(true)->label('Статус'),

@@ -23,11 +23,16 @@ class FinanceRes extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['crm_id', 'name', 'cost_in', 'cost_out'];
+    protected $fillable = ['crm_id', 'name', 'cost_in', 'cost_out', 'type'];
 
     public function spentFacts(): BelongsToMany
     {
         return $this->belongsToMany(FinanceSpentFact::class, 'finance_res_id');
+    }
+
+    public static function getGroupedList()
+    {
+        return self::get()->groupBy('type')->pluck('name', 'id');
     }
 
     public static function makeFromCollab($type)

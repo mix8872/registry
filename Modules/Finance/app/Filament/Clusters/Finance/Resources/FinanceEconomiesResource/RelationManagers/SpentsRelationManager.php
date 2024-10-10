@@ -49,7 +49,7 @@ class SpentsRelationManager extends RelationManager
                     ->state(function (FinanceEconomySpent $r): string {
                         return round($r->spent_count / 3600);
                     })
-                    ->label('Часов потрачено'),
+                    ->label('Количество'),
                 Tables\Columns\TextColumn::make('relation')->numeric()->suffix('%')
                     ->label('Соотношение'),
                 Tables\Columns\TextColumn::make('price_in')->money('RUB')

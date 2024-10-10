@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Clusters\Structure\Resources\ServerResource;
 use App\Models\Server;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,7 +22,7 @@ class ServersOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Server $r) => $r->comment)
-                    ->url(fn(Server $r): string|null => "/registry/structure/servers/{$r->id}", true)
+                    ->url(fn(Server $r): string|null => ServerResource::getUrl('view', ['record' => $r->id]), true)
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
                     ->description(fn(Server $r) => $r->updatedBy->name)->label('Обновлено'),
