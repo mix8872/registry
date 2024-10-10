@@ -54,7 +54,7 @@ class FinanceEconomiesResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->label('')->tooltip('Просмотр'),
-                Tables\Actions\EditAction::make()->label('')->tooltip('Изменить'),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil')->label('')->tooltip('Изменить'),
                 Tables\Actions\CreateAction::make('clone')
                     ->label('')
                     ->color('info')

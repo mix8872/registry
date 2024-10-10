@@ -13,7 +13,11 @@ class EditResource extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\Action::make('Назад')
+                ->url(FinanceResResource::getUrl())
+                ->icon('mdi-arrow-left-thick')
+                ->color('info'),
+            Actions\DeleteAction::make()->icon('mdi-close-thick'),
         ];
     }
 }

@@ -13,7 +13,11 @@ class EditFinanceSpentFact extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\Action::make('Назад')
+                ->url(FinanceSpentFactResource::getUrl())
+                ->icon('mdi-arrow-left-thick')
+                ->color('info'),
+            Actions\DeleteAction::make()->icon('mdi-close-thick'),
         ];
     }
 }

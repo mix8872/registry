@@ -136,8 +136,8 @@ class FactsRelationManager extends RelationManager
                     ->extraModalFooterActions(fn(Action $action): array => [
                         EditAction::make()->slideOver()->form(FinanceSpentFactResource::getFormFields())
                     ]),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil'),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
             ])
             ->bulkActions([]);
     }

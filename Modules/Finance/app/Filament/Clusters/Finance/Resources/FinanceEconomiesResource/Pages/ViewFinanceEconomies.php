@@ -13,7 +13,11 @@ class ViewFinanceEconomies extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            Actions\Action::make('Назад')
+                ->url(FinanceEconomiesResource::getUrl())
+                ->icon('mdi-arrow-left-thick')
+                ->color('info'),
+            Actions\EditAction::make()->icon('mdi-pencil'),
         ];
     }
 }

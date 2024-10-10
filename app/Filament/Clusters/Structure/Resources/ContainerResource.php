@@ -106,8 +106,8 @@ class ContainerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil'),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -129,7 +129,7 @@ class ContainerResource extends Resource
     {
         return [
             'index' => Pages\ListContainers::route('/'),
-            'create' => Pages\CreateContainer::route('/create'),
+//            'create' => Pages\CreateContainer::route('/create'),
             'edit' => Pages\EditContainer::route('/{record}/edit'),
         ];
     }
@@ -163,8 +163,14 @@ class ContainerResource extends Resource
                         ->iconButton()
                         ->url(fn(Container $r) => $r->server_id ? ServerResource::getUrl('edit', ['record' => $r->server_id]) : null, true)
                 )->hidden(fn(Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Server),
-            Forms\Components\TextInput::make('compose_path')->required()->columnSpanFull()->maxLength(255),
-            Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
+            Forms\Components\TextInput::make('compose_path')
+                ->required()
+                ->columnSpanFull()
+                ->maxLength(255),
+            Forms\Components\Textarea::make('comment')
+                ->rows(2)
+                ->columnSpanFull()
+                ->label('Примечание'),
         ];
     }
 }

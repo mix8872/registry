@@ -50,7 +50,7 @@ class StacksRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()->color('gray'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil'),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([

@@ -39,8 +39,8 @@ class CustomerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->slideOver()->modalWidth(MaxWidth::SevenExtraLarge),
-                Tables\Actions\EditAction::make()->slideOver()->modalWidth(MaxWidth::SevenExtraLarge),
-                Tables\Actions\DeleteAction::make()->requiresConfirmation(),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil')->slideOver()->modalWidth(MaxWidth::SevenExtraLarge),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
