@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Clusters\Structure\Resources\RepositoryResource;
 use App\Models\Repository;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,7 +22,7 @@ class RepositoriesOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Repository $r) => $r->comment)
-                    ->url(fn(Repository $r): string|null => "/registry/structure/repositories/{$r->id}", true)
+                    ->url(fn(Repository $r): string|null => RepositoryResource::getUrl('view', ['record' => $r->id]), true)
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('url')
                     ->url(fn(Repository $r): string => $r->url ?? '', true)

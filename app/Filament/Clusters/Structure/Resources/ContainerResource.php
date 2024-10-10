@@ -42,11 +42,11 @@ class ContainerResource extends Resource
                     ->description(fn(Model $r) => $r->comment)
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('repository.name')
-                    ->url(fn(Model $r): string|null => $r->repository ? "/registry/repositories/{$r->repository->id}/edit" : null, true)
+                    ->url(fn(Model $r): string|null => $r->repository ? RepositoryResource::getUrl('edit', ['record' => $r->repository->id]) : null, true)
                     ->searchable()->sortable()
                     ->label('Репозиторий'),
                 Tables\Columns\TextColumn::make('server.name')
-                    ->url(fn(Model $r): string|null => $r->server ? "/registry/servers/{$r->server->id}/edit" : null, true)
+                    ->url(fn(Model $r): string|null => $r->server ? ServerResource::getUrl('edit', ['record' => $r->server->id]) : null, true)
                     ->searchable()->sortable()
                     ->label('Сервер'),
                 Tables\Columns\TextColumn::make('created_at')
@@ -151,7 +151,7 @@ class ContainerResource extends Resource
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')
                         ->iconButton()
-                        ->url(fn(Container $r) => $r->repository_id ? "/registry/repositories/{$r->repository_id}/edit" : null, true)
+                        ->url(fn(Container $r) => $r->repository_id ? RepositoryResource::getUrl('edit', ['record' => $r->repository_id]) : null, true)
                 )->hidden(fn(Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Repository),
             Forms\Components\Select::make('server_id')
                 ->relationship(name: 'server', titleAttribute: 'name')
@@ -161,7 +161,7 @@ class ContainerResource extends Resource
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')
                         ->iconButton()
-                        ->url(fn(Container $r) => $r->server_id ? "/registry/servers/{$r->server_id}/edit" : null, true)
+                        ->url(fn(Container $r) => $r->server_id ? ServerResource::getUrl('edit', ['record' => $r->server_id]) : null, true)
                 )->hidden(fn(Livewire $livewire) => isset($livewire->ownerRecord) && $livewire->ownerRecord instanceof \App\Models\Server),
             Forms\Components\TextInput::make('compose_path')->required()->columnSpanFull()->maxLength(255),
             Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),

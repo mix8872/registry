@@ -2,15 +2,20 @@
 
 namespace Modules\Finance\Filament\Clusters\Finance\Resources;
 
-use Modules\Finance\Filament\Clusters\Finance;
-use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\Pages;
-use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\RelationManagers;
-use Modules\Finance\Models\FinanceEconomy;
+use App\Filament\Clusters\Structure\Resources\ProjectResource;
+use App\Livewire\AboutProject;
+use App\Models\Project;
+use App\Models\Repository;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Modules\Finance\Filament\Clusters\Finance;
+use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\Pages;
+use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\RelationManagers;
+use Modules\Finance\Models\FinanceEconomy;
 use Modules\Finance\Models\FinanceRes;
 
 class FinanceEconomiesResource extends Resource
@@ -54,7 +59,7 @@ class FinanceEconomiesResource extends Resource
                     ->label('')
                     ->color('info')
                     ->tooltip('Клонировать')
-                    ->modalHeading(fn (FinanceEconomy $r) => "Клонировать в новый расчет экономики проекта")
+                    ->modalHeading(fn(FinanceEconomy $r) => "Клонировать в новый расчет экономики проекта")
                     ->icon('mdi-content-copy')
                     ->form(fn(Form $form) => self::form($form->model(FinanceEconomy::class)))
                     ->fillForm(fn(FinanceEconomy $r) => [
@@ -127,7 +132,6 @@ class FinanceEconomiesResource extends Resource
                             $component->state($state ?? $resource->id);
                         })
                 ])
-//                ->collapsed()
                 ->columns(3)
                 ->compact();
         }
@@ -140,7 +144,16 @@ class FinanceEconomiesResource extends Resource
                 ->preload()
                 ->unique(ignoreRecord: true)
                 ->columnSpanFull()
+                ->suffixAction(
+                    Action::make('Перейти')
+                        ->icon('heroicon-m-globe-alt')
+                        ->iconButton()
+                        ->url(fn(FinanceEconomy $r) => $r->project_id ? ProjectResource::getUrl('edit', ['record' => $r->project_id]) : null, true)
+                )
                 ->label('Проект'),
+            Forms\Components\Section::make('О проекте')->schema([
+                Forms\Components\Livewire::make(AboutProject::class, ['model' => $form->model->project])->label('О проекте'),
+            ])->hidden(fn(FinanceEconomy $r) => !$r->exists)->collapsed(),
             Forms\Components\Section::make("Ресурсы")
                 ->schema($fields)
                 ->collapsed()

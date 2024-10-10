@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Filament\Clusters\Structure\Resources\ProjectResource;
 use App\Models\Project;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -42,7 +43,7 @@ class ListProjects extends Component implements HasForms, HasTable
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()->sortable()
                     ->description(fn(Model $r) => $r->comment)
-                    ->url(fn(Project $r) => $r ? "/registry/structure/projects/{$r->id}" : null, true)
+                    ->url(fn(Project $r) => $r ? ProjectResource::getUrl('view', ['record' => $r->id]) : null, true)
                     ->label('Название'),
                 Tables\Columns\SelectColumn::make('status')->selectablePlaceholder(false)
                     ->disabled()

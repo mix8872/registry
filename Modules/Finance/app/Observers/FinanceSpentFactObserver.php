@@ -10,4 +10,9 @@ class FinanceSpentFactObserver
     {
         $r->economy->save();
     }
+
+    public function deleted(Model $r)
+    {
+        $r->economy->save();
+    }
 }

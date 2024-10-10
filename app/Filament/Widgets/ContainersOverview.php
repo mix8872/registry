@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Clusters\Structure\Resources\ContainerResource;
 use App\Models\Container;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,7 +22,7 @@ class ContainersOverview extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()
                     ->description(fn(Container $r) => $r->comment)
-                    ->url(fn(Container $r): string|null => "/registry/structure/containers/{$r->id}", true)
+                    ->url(fn(Container $r): string|null => ContainerResource::getUrl('view', ['record' => $r->id]), true)
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('updated_at')->sortable()->dateTime()
                     ->description(fn(Container $r) => $r->updatedBy->name)->label('Обновлено'),

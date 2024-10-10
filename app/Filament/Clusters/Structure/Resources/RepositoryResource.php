@@ -44,7 +44,7 @@ class RepositoryResource extends Resource
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('project.name')
                     ->label('Проект')
-                    ->url(fn(Model $r): string|null => $r->project ? "/registry/projects/{$r->project->id}/edit" : null, true)
+                    ->url(fn(Model $r): string|null => $r->project ? ProjectResource::getUrl('edit', ['record' => $r->project->id]) : null, true)
                     ->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('url')
                     ->url(fn(Model $r): string => $r->url ?? '', true)
@@ -151,7 +151,7 @@ class RepositoryResource extends Resource
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')
                         ->iconButton()
-                        ->url(fn(Repository $r) => $r->project_id ? "/registry/projects/{$r->project_id}/edit" : null, true)
+                        ->url(fn(Repository $r) => $r->project_id ? ProjectResource::getUrl('edit', ['record' => $r->project_id]) : null, true)
                 )
                 ->label('Проект'),
             Forms\Components\TextInput::make('url')
