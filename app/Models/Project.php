@@ -89,6 +89,21 @@ class Project extends Model
         return $this->belongsTo(WorkType::class);
     }
 
+    public function getPaymentAttribute()
+    {
+        return $this->payment_type ? self::$payments[$this->payment_type] : null;
+    }
+
+    public function getPeriodAttribute()
+    {
+        return $this->payment_period ? self::$paymentPeriods[$this->payment_period] : null;
+    }
+
+    public function getLegalAttribute()
+    {
+        return $this->legal_inner ? self::$legals[$this->legal_inner] : null;
+    }
+
     /**
      * @param integer|null $updated_by User id
      * @return void
