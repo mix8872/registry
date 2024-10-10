@@ -152,7 +152,7 @@ class FinanceEconomiesResource extends Resource
                 )
                 ->label('Проект'),
             Forms\Components\Section::make('О проекте')->schema([
-                Forms\Components\Livewire::make(AboutProject::class, ['model' => $form->model->project])->label('О проекте'),
+                Forms\Components\Livewire::make(AboutProject::class, ['model' => is_string($form->model) ? null : $form->model->project]),
             ])->hidden(fn(FinanceEconomy $r) => !$r->exists)->collapsed(),
             Forms\Components\Section::make("Ресурсы")
                 ->schema($fields)

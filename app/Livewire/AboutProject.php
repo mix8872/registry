@@ -19,11 +19,11 @@ class AboutProject extends Component implements HasForms, HasInfolists
 
 //    protected $listeners = ['refreshComponent' => '$refresh'];
 
-    public Model $model;
+    public ?Model $model;
 
     public function mount($model): void
     {
-        $this->model = is_string($model) ? new $model() : $model;
+        $this->model = $model;
     }
 
     public function render()
@@ -31,33 +31,45 @@ class AboutProject extends Component implements HasForms, HasInfolists
         return view('livewire.infolist');
     }
 
-    public function infolist(Infolist $infolist): Infolist
+    public function infolist(Infolist $infolist): Infolist|null
     {
+        if (!$this->model) {
+            return null;
+        }
         return $infolist->record($this->model)
             ->schema([
                 Components\TextEntry::make('client')
+                    ->default('Не задано')
                     ->label('Клиент'),
                 Components\TextEntry::make('customer.name')
+                    ->default('Не задано')
                     ->label('Заказчик'),
                 Components\TextEntry::make('legal_customer')
+                    ->default('Не задано')
                     ->label('Юрлицо заказчика'),
-                Components\TextEntry::make('legal_inner')
+                Components\TextEntry::make('legal')
+                    ->default('Не задано')
                     ->label('Юрлицо внутреннее'),
                 Components\TextEntry::make('contract_date')
+                    ->default('Не задано')
                     ->label('Дата заключения'),
                 Components\TextEntry::make('contract_close_date')
+                    ->default('Не задано')
                     ->label('Дата сдачи'),
-                Components\TextEntry::make('payment_type')
-                    ->formatStateUsing(fn (string $state): string => Project::$payments[$state])
+                Components\TextEntry::make('payment')
+                    ->default('Не задано')
                     ->label('Тип оплаты'),
-                Components\TextEntry::make('payment_period')
-                    ->formatStateUsing(fn (string $state): string => Project::$paymentPeriods[$state])
+                Components\TextEntry::make('period')
+                    ->default('Не задано')
                     ->label('Периодичность оплаты'),
                 Components\TextEntry::make('workType.name')
+                    ->default('Не задано')
                     ->label('Тип работы'),
                 Components\TextEntry::make('contract')
+                    ->default('Не задано')
                     ->label('Договор'),
                 Components\TextEntry::make('cost')
+                    ->default('Не задано')
                     ->numeric()
                     ->label('Стоимость')
             ])
