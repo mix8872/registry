@@ -12,6 +12,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Modules\Finance\Filament\Clusters\Finance;
 use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\Pages;
 use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\RelationManagers;
@@ -47,7 +48,15 @@ class FinanceEconomiesResource extends Resource
                     ->state(function (FinanceEconomy $r): string {
                         return FinanceEconomy::$statuses[$r->status];
                     })
-                    ->label('Статус')
+                    ->label('Статус'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->sortable()->dateTime()
+                    ->description(fn(Model $r) => $r->createdBy->name ?? null)
+                    ->label('Создано'),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->sortable()->dateTime()
+                    ->description(fn(Model $r) => $r->updatedBy->name ?? null)
+                    ->label('Обновлено'),
             ])
             ->filters([
                 //
@@ -159,5 +168,10 @@ class FinanceEconomiesResource extends Resource
                 ->collapsed()
                 ->compact(),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
