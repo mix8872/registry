@@ -3,6 +3,7 @@
 namespace Modules\Finance\Models;
 
 use App\Models\Project;
+use App\Traits\HasOwner;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class FinanceEconomy extends Model
 {
     use HasFactory;
+    use HasOwner;
 
     public const STATUS_NEW = 'new';
     public const STATUS_PROCESS = 'process';

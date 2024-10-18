@@ -2,6 +2,7 @@
 
 namespace Modules\Finance\Providers;
 
+use App\Observers\HasOwnerObserver;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Modules\Finance\Models\FinanceEconomy;
 use Modules\Finance\Models\FinanceRes;
@@ -27,7 +28,7 @@ class EventServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        FinanceEconomy::observe(FinanceEconomyObserver::class);
+        FinanceEconomy::observe([FinanceEconomyObserver::class, HasOwnerObserver::class]);
         FinanceSpentFact::observe(FinanceSpentFactObserver::class);
     }
 
