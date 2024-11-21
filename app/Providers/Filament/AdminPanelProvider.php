@@ -76,23 +76,16 @@ class AdminPanelProvider extends PanelProvider
 //                            ->with(['...']),
                     ])
                     ->registration(true)
-                    ->createUserUsing(function (string $provider, \SocialiteProviders\Manager\OAuth2\User $oauthUser, FilamentSocialitePlugin $plugin) {
-                        $query = (new User())->query();
-                        $userObj = $query->create([
-                            'name' => $oauthUser->getName(),
-                            'email' => $oauthUser->getEmail(),
-                            'password' => Hash::make($oauthUser->token)
-                        ]);
-
-                        foreach ($oauthUser->attributes['groups'] as $role) {
-                            FilamentShield::createRole($role);
-                        }
-                        $userObj->syncRoles(...$oauthUser->attributes['groups']);
-
-                        return $userObj;
+                    ->createUserUsing(function (string $provider,
+                        \SocialiteProviders\Manager\OAuth2\User $oauthUser,
+                        FilamentSocialitePlugin $plugin
+                    ) {
+                        return $this->makeUser($oauthUser);
                     })
                     ->authorizeUserUsing(function (FilamentSocialitePlugin $plugin, \SocialiteProviders\Manager\OAuth2\User $oauthUser) {
-                        $user = User::where('email', $oauthUser->email)->first();
+                        if (!$user = User::where('email', $oauthUser->email)->first()) {
+                            $user = $this->makeUser($oauthUser);
+                        }
                         foreach ($oauthUser->attributes['groups'] as $role) {
                             FilamentShield::createRole($role);
                         }
@@ -116,5 +109,22 @@ class AdminPanelProvider extends PanelProvider
             ->unsavedChangesAlerts()
             ->databaseTransactions()
             ->topNavigation();
+    }
+
+    public function makeUser($oauthUser)
+    {
+        $query = (new User())->query();
+        $userObj = $query->create([
+            'name' => $oauthUser->getName(),
+            'email' => $oauthUser->getEmail(),
+            'password' => Hash::make($oauthUser->token)
+        ]);
+
+        foreach ($oauthUser->attributes['groups'] as $role) {
+            FilamentShield::createRole($role);
+        }
+        $userObj->syncRoles(...$oauthUser->attributes['groups']);
+
+        return $userObj;
     }
 }

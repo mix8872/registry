@@ -34,7 +34,6 @@ return [
     'collab' => [
         'host' => env('COLLAB_HOST'),
         'token' => env('COLLAB_TOKEN'),
-        'pass' => env('PASS_TO_COLLAB', false),
         'hook_token' => env('COLLAB_HOOK_TOKEN'),
     ],
 
