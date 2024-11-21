@@ -5,7 +5,6 @@ namespace Modules\Finance\Providers;
 use App\Observers\HasOwnerObserver;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Modules\Finance\Models\FinanceEconomy;
-use Modules\Finance\Models\FinanceRes;
 use Modules\Finance\Models\FinanceSpentFact;
 use Modules\Finance\Observers\FinanceEconomyObserver;
 use Modules\Finance\Observers\FinanceSpentFactObserver;
