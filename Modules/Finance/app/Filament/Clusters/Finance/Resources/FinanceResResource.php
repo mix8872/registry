@@ -138,8 +138,8 @@ class FinanceResResource extends Resource
             Forms\Components\Select::make('type')->required()
                 ->searchable()
                 ->options(FinanceRes::$types)->label('Тип'),
-            Forms\Components\TextInput::make('cost_in')->numeric()->label('Стоимость внутренняя'),
-            Forms\Components\TextInput::make('cost_out')->numeric()->label('Стоимость внешняя'),
+            Forms\Components\TextInput::make('cost_in')->numeric()->required()->label('Стоимость внутренняя'),
+            Forms\Components\TextInput::make('cost_out')->numeric()->required()->label('Стоимость внешняя'),
             Forms\Components\TextInput::make('comment')->columnSpanFull()->label('Примечание')
         ];
     }
