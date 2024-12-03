@@ -71,7 +71,7 @@ class AdminPanelProvider extends PanelProvider
 //                            ->icon('fab-gitlab')
                             ->color(Color::hex('#2f2a6b'))
                             ->outlined(false)
-                            ->stateless(false)
+                            ->stateless(false),
 //                            ->scopes(['...'])
 //                            ->with(['...']),
                     ])

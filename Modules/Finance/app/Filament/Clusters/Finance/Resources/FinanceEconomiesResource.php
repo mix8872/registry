@@ -62,8 +62,17 @@ class FinanceEconomiesResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->label('')->tooltip('Просмотр'),
-                Tables\Actions\EditAction::make()->icon('mdi-pencil')->label('')->tooltip('Изменить'),
+                Tables\Actions\ViewAction::make()
+                    ->label('')
+                    ->tooltip('Просмотр'),
+                Tables\Actions\EditAction::make()
+                    ->icon('mdi-pencil')
+                    ->label('')
+                    ->tooltip('Изменить')
+                    ->visible(fn(Model $r) => in_array(auth()->user()->id, [
+                        $r->created_by,
+                        $r->project->created_by
+                    ])),
                 Tables\Actions\CreateAction::make('clone')
                     ->label('')
                     ->color('info')
