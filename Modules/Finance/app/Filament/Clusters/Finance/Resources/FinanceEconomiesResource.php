@@ -42,6 +42,7 @@ class FinanceEconomiesResource extends Resource
                 Tables\Columns\TextColumn::make('project.name')
                     ->sortable()
                     ->searchable()
+                    ->description(fn(Model $r) => $r->project->createdBy->name)
                     ->label('Проект'),
                 Tables\Columns\TextColumn::make('status')
                     ->sortable()
