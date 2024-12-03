@@ -129,8 +129,10 @@ class FinanceSpentFactResource extends Resource
                         EditAction::make()->slideOver()->form(static::getFormFields())
                     ]),
                 Tables\Actions\EditAction::make()->icon('mdi-pencil')
+                    ->visible(fn(Model $r) => empty($r->crm_id))->requiresConfirmation()
                     ->slideOver(),
-                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')
+                    ->visible(fn(Model $r) => empty($r->crm_id))->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

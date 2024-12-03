@@ -10,6 +10,11 @@ class EditFinanceSpentFact extends EditRecord
 {
     protected static string $resource = FinanceSpentFactResource::class;
 
+    public static function canAccess(array $parameters = []): bool
+    {
+        return empty($parameters['record']->crm_id);
+    }
+
     protected function getHeaderActions(): array
     {
         return [

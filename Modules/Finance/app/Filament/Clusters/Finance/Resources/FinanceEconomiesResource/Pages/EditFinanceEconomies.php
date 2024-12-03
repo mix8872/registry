@@ -2,6 +2,7 @@
 
 namespace Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\Pages;
 
+use Illuminate\Database\Eloquent\Model;
 use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -9,6 +10,14 @@ use Filament\Resources\Pages\EditRecord;
 class EditFinanceEconomies extends EditRecord
 {
     protected static string $resource = FinanceEconomiesResource::class;
+
+    public static function canAccess(array $parameters = []): bool
+    {
+        return in_array(auth()->user()->id, [
+            $parameters['record']->created_by,
+            $parameters['record']->project->created_by
+        ]);
+    }
 
     protected function getHeaderActions(): array
     {
