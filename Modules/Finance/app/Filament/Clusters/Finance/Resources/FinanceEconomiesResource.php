@@ -73,7 +73,7 @@ class FinanceEconomiesResource extends Resource
                     ->visible(fn(Model $r) => in_array(auth()->user()->id, [
                         $r->created_by,
                         $r->project->created_by
-                    ])),
+                    ]) || auth()->user()->hasRole('admins')),
                 Tables\Actions\CreateAction::make('clone')
                     ->label('')
                     ->color('info')
