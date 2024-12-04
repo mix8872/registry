@@ -16,7 +16,7 @@ class EditFinanceEconomies extends EditRecord
         return in_array(auth()->user()->id, [
             $parameters['record']->created_by,
             $parameters['record']->project->created_by
-        ]);
+        ]) || auth()->user()->hasRole('admins');
     }
 
     protected function getHeaderActions(): array

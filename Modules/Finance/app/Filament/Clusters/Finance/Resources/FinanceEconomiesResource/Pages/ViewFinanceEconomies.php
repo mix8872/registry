@@ -21,7 +21,7 @@ class ViewFinanceEconomies extends ViewRecord
             Actions\EditAction::make()->icon('mdi-pencil')->visible(fn (Model $r) => in_array(auth()->user()->id, [
                 $r->created_by,
                 $r->project->created_by
-            ])),
+            ]) || auth()->user()->hasRole('admins')),
         ];
     }
 }
