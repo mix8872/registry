@@ -41,6 +41,10 @@ class RepositoriesRelationManager extends RelationManager
                     ->sortable()
                     ->url(fn(Repository $r): string => $r->url ?? '', true)
                     ->label('Ссылка'),
+                Tables\Columns\TextColumn::make('type')
+                    ->sortable()
+                    ->url(fn(Repository $r): string => $r->url ?? '', true)
+                    ->label('Тип'),
             ])
             ->filters([
                 //
