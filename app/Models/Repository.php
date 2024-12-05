@@ -43,7 +43,7 @@ class Repository extends Model
 
     public function servers(): BelongsToMany
     {
-        return $this->belongsToMany(Server::class)->withPivot(['type', 'url']);
+        return $this->belongsToMany(Server::class)->withPivot(['url']);
     }
 
     public function containers(): HasMany

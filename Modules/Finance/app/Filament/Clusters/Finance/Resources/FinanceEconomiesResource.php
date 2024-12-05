@@ -8,9 +8,11 @@ use App\Models\Project;
 use App\Models\Repository;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Finance\Filament\Clusters\Finance;
@@ -60,7 +62,39 @@ class FinanceEconomiesResource extends Resource
                     ->label('Обновлено'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')->options(FinanceEconomy::$statuses)->label('Статус'),
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Создано от'),
+                        DatePicker::make('created_until')->label('Создано до'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    }),
+                Filter::make('updated_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Обновлено от'),
+                        DatePicker::make('created_until')->label('Обновлено до'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('updated_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn(Builder $query, $date): Builder => $query->whereDate('updated_at', '<=', $date),
+                            );
+                    }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
@@ -123,6 +157,7 @@ class FinanceEconomiesResource extends Resource
                         ->placeholder(0)
                         ->default(0)
                         ->required()
+                        ->integer()
                         ->extraInputAttributes(['onClick' => 'this.select()'])
                         ->label("Продано часов"),
                     Forms\Components\TextInput::make("rates.{$resource->name}.in")
