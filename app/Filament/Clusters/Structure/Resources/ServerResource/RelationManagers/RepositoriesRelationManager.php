@@ -107,7 +107,6 @@ class RepositoriesRelationManager extends RelationManager
                         $action->getRecordSelect(),
                         Forms\Components\TextInput::make('resource_url')
                             ->url()
-                            ->required()
                             ->maxLength(255)
                             ->label('Ссылка на ресурс'),
                         Forms\Components\ToggleButtons::make('type')
