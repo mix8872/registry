@@ -165,6 +165,11 @@ class RepositoryResource extends Resource
                         ->url(fn(Repository $r) => $r->url, true)
                 )
                 ->label('Ссылка'),
+            Forms\Components\ToggleButtons::make('type')->options([
+                'frontend' => 'Frontend',
+                'backend' => 'Backend',
+                'other' => 'Other'
+            ])->inline(),
             Forms\Components\Textarea::make('comment')->rows(2)->columnSpanFull()->label('Примечание'),
         ];
     }
