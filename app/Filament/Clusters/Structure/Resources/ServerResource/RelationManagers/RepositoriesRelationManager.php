@@ -47,6 +47,7 @@ class RepositoriesRelationManager extends RelationManager
             Forms\Components\TextInput::make('url')
                 ->url()
                 ->required()
+                ->unique()
                 ->maxLength(255)
                 ->suffixAction(
                     Action::make('Перейти')
@@ -87,7 +88,7 @@ class RepositoriesRelationManager extends RelationManager
                     ->label('Ссылка на репозиторий'),
                 Tables\Columns\TextColumn::make('resource_url')
                     ->sortable()
-                    ->url(fn(Repository $r): string => $r->url ?? '', true)
+                    ->url(fn(Repository $r): string => $r->resource_url ?? '', true)
                     ->label('Ссылка на ресурс'),
                 Tables\Columns\TextColumn::make('type')
                     ->sortable()
