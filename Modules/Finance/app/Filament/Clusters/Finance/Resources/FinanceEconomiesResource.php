@@ -4,8 +4,6 @@ namespace Modules\Finance\Filament\Clusters\Finance\Resources;
 
 use App\Filament\Clusters\Structure\Resources\ProjectResource;
 use App\Livewire\AboutProject;
-use App\Models\Project;
-use App\Models\Repository;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -20,6 +18,7 @@ use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource
 use Modules\Finance\Filament\Clusters\Finance\Resources\FinanceEconomiesResource\RelationManagers;
 use Modules\Finance\Models\FinanceEconomy;
 use Modules\Finance\Models\FinanceRes;
+use Illuminate\Database\Eloquent\Builder;
 
 class FinanceEconomiesResource extends Resource
 {
