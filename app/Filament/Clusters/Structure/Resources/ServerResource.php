@@ -10,6 +10,7 @@ use App\Filament\Clusters\Structure\Resources\ServerResource\RelationManagers;
 use App\Filament\Clusters\Structure\Resources\ServerResource\RelationManagers\RepositoriesRelationManager;
 use App\Livewire\ListAddresses;
 use App\Models\Server;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
@@ -52,8 +53,18 @@ class ServerResource extends Resource
                     ->getStateUsing(fn() => 'Перейти')
                     ->label('Доступы'),
                 Tables\Columns\TextColumn::make('last_updated_at')
-                    ->description(fn(Model $r) => $r->updatedBy->name)
-                    ->sortable()->dateTime()
+                    ->sortable()->date()
+                    ->badge()
+                    ->color(function (Model $r) {
+                        $d = Carbon::createFromDate($r->last_updated_at);
+                        $diff = $d->diffInMonths(Carbon::now());
+
+                        return match (true) {
+                            $diff > 3 => 'danger',
+                            $diff > 2 => 'warning',
+                            default => 'success'
+                        };
+                    })
                     ->label('Последнее обновление'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->description(fn(Model $r) => $r->createdBy->name)

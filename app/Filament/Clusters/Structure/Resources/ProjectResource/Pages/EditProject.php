@@ -17,7 +17,9 @@ class EditProject extends EditRecord
                 ->url(ProjectResource::getUrl())
                 ->icon('mdi-arrow-left-thick')
                 ->color('info'),
-            Actions\DeleteAction::make()->icon('mdi-close-thick'),
+            Actions\DeleteAction::make()
+                ->hidden(fn() => !auth()->user()->hasRole('admin'))
+                ->icon('mdi-close-thick'),
         ];
     }
 }
