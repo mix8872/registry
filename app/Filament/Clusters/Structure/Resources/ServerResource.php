@@ -155,7 +155,7 @@ class ServerResource extends Resource
         return [
             'index' => Pages\ListServers::route('/'),
             'create' => Pages\CreateServer::route('/create'),
-            'edit' => Pages\EditServer::route('/{record}/edit'),
+            'edit' => Pages\EditServer::route('/{record}/edit')
         ];
     }
 
