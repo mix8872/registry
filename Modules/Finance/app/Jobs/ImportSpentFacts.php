@@ -10,6 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Arr;
 use Modules\Finance\Models\FinanceEconomy;
 use Modules\Finance\Models\FinanceSpentFact;
 
@@ -113,6 +114,12 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
                 ];
             }
             $this->economy->spents()->createMany($spents);
+
+            $performances = Arr::pluck($spents, 'performance');
+            $profits = Arr::pluck($spents, 'profit');
+            $this->economy->performance = array_sum($performances);
+            $this->economy->profit = array_sum($profits);
+
             $this->economy->setStatus(FinanceEconomy::STATUS_DONE);
         } catch (\Error|\Exception $e) {
             $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $this->job->getJobId());

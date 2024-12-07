@@ -51,6 +51,14 @@ class FinanceEconomiesResource extends Resource
                         return FinanceEconomy::$statuses[$r->status];
                     })
                     ->label('Статус'),
+                Tables\Columns\TextColumn::make('performance')
+                    ->sortable()
+                    ->numeric()
+                    ->label('Эффективность'),
+                Tables\Columns\TextColumn::make('profit')
+                    ->sortable()
+                    ->numeric()
+                    ->label('Доход'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()->dateTime()
                     ->description(fn(Model $r) => $r->createdBy->name ?? null)
@@ -104,9 +112,9 @@ class FinanceEconomiesResource extends Resource
                     ->label('')
                     ->tooltip('Изменить')
                     ->visible(fn(Model $r) => in_array(auth()->user()->id, [
-                        $r->created_by,
-                        $r->project->created_by
-                    ]) || auth()->user()->hasRole('admins')),
+                            $r->created_by,
+                            $r->project->created_by
+                        ]) || auth()->user()->hasRole('admins')),
                 Tables\Actions\CreateAction::make('clone')
                     ->label('')
                     ->color('info')

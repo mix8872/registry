@@ -16,11 +16,13 @@ class FinanceEconomy extends Model
 
     public const STATUS_NEW = 'new';
     public const STATUS_PROCESS = 'process';
+    public const STATUS_RECALC = 'recount';
     public const STATUS_DONE = 'done';
     public const STATUS_ERROR = 'error';
 
     public static array $statuses = [
         self::STATUS_NEW => 'Новый',
+        self::STATUS_RECALC => 'Пересчёт',
         self::STATUS_PROCESS => 'В процессе',
         self::STATUS_DONE => 'Готов',
         self::STATUS_ERROR => 'Ошибка',
