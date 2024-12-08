@@ -11,6 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Modules\Finance\Models\FinanceEconomy;
 use Modules\Finance\Models\FinanceSpentFact;
 
@@ -123,9 +124,9 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
             $this->economy->setStatus(FinanceEconomy::STATUS_DONE);
         } catch (\Error|\Exception $e) {
             $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $this->job->getJobId());
-            $this->error($e->getMessage());
+            Log::error($e->getMessage());
             if (config('app.debug')) {
-                $this->error($e->getTraceAsString());
+                Log::error($e->getTraceAsString());
             }
         }
     }
