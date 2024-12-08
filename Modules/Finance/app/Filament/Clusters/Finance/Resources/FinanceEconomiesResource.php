@@ -198,6 +198,15 @@ class FinanceEconomiesResource extends Resource
         }
 
         return [
+            Forms\Components\ViewField::make('status')
+                /*->afterStateHydrated(function (Forms\Components\ViewField $component, string $state) {
+                    $component->state(FinanceEconomy::$statuses[$state]);
+                })*/
+                ->view('filament.forms.components.field-view')
+                ->viewData([
+                    'value' => fn (Model $r) => FinanceEconomy::$statuses[$r->status]
+                ])
+                ->label('Статус'),
             Forms\Components\Select::make('project_id')
                 ->relationship('project', 'name')
                 ->required()
