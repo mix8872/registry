@@ -94,7 +94,7 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
                 }
 
                 $spentCount = round($facts[$rate['id']]->sum('count'));
-                $soldCount = $rate['sold'];
+                $soldCount = round($rate['sold']);
                 $priceIn = round($spentCount / 3600 * $rate['in'], 2);
                 $priceOut = round($soldCount * $rate['out'], 2);
 

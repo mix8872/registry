@@ -160,7 +160,7 @@ class FinanceEconomiesResource extends Resource
             $fields[] = Forms\Components\Section::make($resource->name)
                 ->schema([
                     Forms\Components\TextInput::make("rates.{$resource->name}.sold")
-                        ->numeric()
+                        ->integer()
                         ->placeholder(0)
                         ->default(0)
                         ->required()
@@ -199,9 +199,6 @@ class FinanceEconomiesResource extends Resource
 
         return [
             Forms\Components\ViewField::make('status')
-                /*->afterStateHydrated(function (Forms\Components\ViewField $component, string $state) {
-                    $component->state(FinanceEconomy::$statuses[$state]);
-                })*/
                 ->view('filament.forms.components.field-view')
                 ->viewData([
                     'value' => fn (Model $r) => FinanceEconomy::$statuses[$r->status]
