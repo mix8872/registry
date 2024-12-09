@@ -31,8 +31,7 @@ class RecalcEconomyAction extends Action
 
         $this->action(function (): void {
             $this->process(function (FinanceEconomy $r): void {
-                $r->status = FinanceEconomy::STATUS_RECALC;
-                $r->save();
+                $r->setStatus(FinanceEconomy::STATUS_RECALC);
             });
 
             $this->success();

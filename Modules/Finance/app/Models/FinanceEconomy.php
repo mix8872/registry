@@ -71,15 +71,15 @@ class FinanceEconomy extends Model
 
     /**
      * @param string $status
-     * @param int|null $jobId
+     * @param string|null $error
      * @return $this|false
      */
-    public function setStatus(string $status, int|null $jobId = null)
+    public function setStatus(string $status, string|null $error = '')
     {
         if (!isset(static::$statuses[$status])) {
             return false;
         }
-        $this->job_id = $jobId;
+        $this->error = $error;
         $this->status = $status;
         $this->save();
         return $this;
