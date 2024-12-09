@@ -53,7 +53,7 @@ class FinanceEconomiesResource extends Resource
                     ->state(function (FinanceEconomy $r): string {
                         return FinanceEconomy::$statuses[$r->status];
                     })
-                    ->description(fn (Model $r) => $r->status == FinanceEconomy::STATUS_ERROR ? $r->error : '')
+                    ->description(fn (Model $r) => $r->error)
                     ->label('Статус'),
                 Tables\Columns\TextColumn::make('performance')
                     ->sortable()
@@ -208,7 +208,7 @@ class FinanceEconomiesResource extends Resource
                 ->options(FinanceEconomy::$statuses)
                 ->colors(FinanceEconomy::$statusColors)
                 ->inline()
-                ->helperText(fn (Model $r) => $r->status == FinanceEconomy::STATUS_ERROR ? $r->error : '')
+                ->helperText(fn (Model $r) => $r->error)
                 ->disabled(fn () => !auth()->user()->hasRole('admins'))
                 ->label('Статус'),
             Forms\Components\Select::make('project_id')
