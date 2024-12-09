@@ -49,11 +49,11 @@ class FinanceEconomiesResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->sortable()
                     ->badge()
-                    ->color(fn (Model $r) => FinanceEconomy::$statusColors[$r->status])
+                    ->color(fn(Model $r) => FinanceEconomy::$statusColors[$r->status])
                     ->state(function (FinanceEconomy $r): string {
                         return FinanceEconomy::$statuses[$r->status];
                     })
-                    ->description(fn (Model $r) => $r->error)
+                    ->description(fn(Model $r) => $r->error)
                     ->label('Статус'),
                 Tables\Columns\TextColumn::make('performance')
                     ->sortable()
@@ -77,6 +77,22 @@ class FinanceEconomiesResource extends Resource
                     ->options(FinanceEconomy::$statuses)
                     ->multiple()
                     ->label('Статус'),
+                Filter::make('profit')
+                    ->form([
+                        Forms\Components\TextInput::make('profit_from')->numeric()->label('Доход от'),
+                        Forms\Components\TextInput::make('profit_until')->numeric()->label('Доход до'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['profit_from'],
+                                fn(Builder $query, $profit): Builder => $query->where('profit', '>=', $profit),
+                            )
+                            ->when(
+                                $data['profit_until'],
+                                fn(Builder $query, $profit): Builder => $query->where('profit', '<=', $profit),
+                            );
+                    }),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')->label('Создано от'),
@@ -208,8 +224,8 @@ class FinanceEconomiesResource extends Resource
                 ->options(FinanceEconomy::$statuses)
                 ->colors(FinanceEconomy::$statusColors)
                 ->inline()
-                ->helperText(fn (Model $r) => $r->error)
-                ->disabled(fn () => !auth()->user()->hasRole('admins'))
+                ->helperText(fn(Model $r) => $r->error)
+                ->disabled(fn() => !auth()->user()->hasRole('admins'))
                 ->label('Статус'),
             Forms\Components\Select::make('project_id')
                 ->relationship('project', 'name')
