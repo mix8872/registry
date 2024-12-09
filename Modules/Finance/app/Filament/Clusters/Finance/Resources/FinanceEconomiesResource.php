@@ -4,6 +4,7 @@ namespace Modules\Finance\Filament\Clusters\Finance\Resources;
 
 use App\Filament\Clusters\Structure\Resources\ProjectResource;
 use App\Livewire\AboutProject;
+use Filament\Support\Colors\Color;
 use Filament\Forms;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
@@ -47,6 +48,8 @@ class FinanceEconomiesResource extends Resource
                     ->label('Проект'),
                 Tables\Columns\TextColumn::make('status')
                     ->sortable()
+                    ->badge()
+                    ->color(fn (Model $r) => FinanceEconomy::$statusColors[$r->status])
                     ->state(function (FinanceEconomy $r): string {
                         return FinanceEconomy::$statuses[$r->status];
                     })
@@ -127,9 +130,8 @@ class FinanceEconomiesResource extends Resource
                     ])
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\DeleteBulkAction::make(),
+                Finance\Actions\RecalcEconomyBulkAction::make()
             ])
             ->poll('5s');
     }
@@ -198,11 +200,11 @@ class FinanceEconomiesResource extends Resource
         }
 
         return [
-            Forms\Components\ViewField::make('status')
-                ->view('filament.forms.components.field-view')
-                ->viewData([
-                    'value' => fn (Model $r) => FinanceEconomy::$statuses[$r->status]
-                ])
+            Forms\Components\ToggleButtons::make('status')
+                ->options(FinanceEconomy::$statuses)
+                ->colors(FinanceEconomy::$statusColors)
+                ->inline()
+                ->disabled(fn () => !auth()->user()->hasRole('admins'))
                 ->label('Статус'),
             Forms\Components\Select::make('project_id')
                 ->relationship('project', 'name')
@@ -210,7 +212,7 @@ class FinanceEconomiesResource extends Resource
                 ->searchable()
                 ->preload()
                 ->unique(ignoreRecord: true)
-                ->columnSpanFull()
+//                ->columnSpanFull()
                 ->suffixAction(
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')

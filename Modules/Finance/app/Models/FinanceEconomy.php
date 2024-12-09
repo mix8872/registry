@@ -4,6 +4,7 @@ namespace Modules\Finance\Models;
 
 use App\Models\Project;
 use App\Traits\HasOwner;
+use Filament\Support\Colors\Color;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,10 +23,18 @@ class FinanceEconomy extends Model
 
     public static array $statuses = [
         self::STATUS_NEW => 'Новый',
-        self::STATUS_RECALC => 'Пересчёт',
         self::STATUS_PROCESS => 'В процессе',
         self::STATUS_DONE => 'Готов',
+        self::STATUS_RECALC => 'Пересчёт',
         self::STATUS_ERROR => 'Ошибка',
+    ];
+
+    public static array $statusColors = [
+        FinanceEconomy::STATUS_NEW => 'info',
+        FinanceEconomy::STATUS_PROCESS => Color::Teal,
+        FinanceEconomy::STATUS_ERROR => 'danger',
+        FinanceEconomy::STATUS_DONE => 'success',
+        FinanceEconomy::STATUS_RECALC => 'warning'
     ];
 
     /**
