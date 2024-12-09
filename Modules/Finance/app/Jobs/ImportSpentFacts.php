@@ -75,13 +75,17 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
             } while ($r && $r['time_records']);
             $records = array_merge_recursive(...$records);
 
-            switch (true) {
+            /*switch (true) {
                 case !$records:
-                    throw new \Exception('Записи о затреканном времени не получены');
+//                    throw new \Exception('Записи о затреканном времени не получены');
+                    $this->economy->setStatus(FinanceEconomy::STATUS_DONE, 'Записи о затреканном времени не получены');
+                    break;
                 case isset($records['message']):
                     throw new \Exception($records['message']);
+            }*/
+            if ($records) {
+                FinanceSpentFact::makeFromCollab($this->project, $records['time_records'], $records['related']['Task']);
             }
-            FinanceSpentFact::makeFromCollab($this->project, $records['time_records'], $records['related']['Task']);
 
             $facts = $this->economy->facts->groupBy('finance_res_id');
             $rates = $this->economy->rates;
