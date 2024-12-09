@@ -35,8 +35,7 @@ class RecalcEconomyBulkAction extends BulkAction
                     if (!in_array($r->status, [FinanceEconomy::STATUS_DONE, FinanceEconomy::STATUS_ERROR])){
                         continue;
                     }
-                    $r->status = FinanceEconomy::STATUS_RECALC;
-                    $r->save();
+                    $r->setStatus(FinanceEconomy::STATUS_RECALC);
                 }
             });
 

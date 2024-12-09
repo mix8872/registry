@@ -59,7 +59,7 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
     public function handle(): void
     {
         try {
-            $this->economy->setStatus(FinanceEconomy::STATUS_PROCESS, $this->job->getJobId());
+            $this->economy->setStatus(FinanceEconomy::STATUS_PROCESS);
 
             $client = ActiveCollabClient::make();
 
@@ -67,20 +67,19 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
             $records = [];
             do {
                 $r = $client->get("projects/{$this->project->crm_id}/time-records/?page=$page")->getJson();
+                if (!$r) {
+                    continue;
+                }
                 $records[] = $r;
                 $page++;
-            } while ($r['time_records']);
+            } while ($r && $r['time_records']);
             $records = array_merge_recursive(...$records);
 
             switch (true) {
                 case !$records:
                     throw new \Exception('Записи о затреканном времени не получены');
-                    $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $this->job->getJobId());
-                    return;
                 case isset($records['message']):
                     throw new \Exception($records['message']);
-                    $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $this->job->getJobId());
-                    return;
             }
             FinanceSpentFact::makeFromCollab($this->project, $records['time_records'], $records['related']['Task']);
 
@@ -123,7 +122,7 @@ class ImportSpentFacts implements ShouldQueue, ShouldBeUnique
 
             $this->economy->setStatus(FinanceEconomy::STATUS_DONE);
         } catch (\Error|\Exception $e) {
-            $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $this->job->getJobId());
+            $this->economy->setStatus(FinanceEconomy::STATUS_ERROR, $e->getMessage());
             Log::error($e->getMessage());
             if (config('app.debug')) {
                 Log::error($e->getTraceAsString());

@@ -53,6 +53,7 @@ class FinanceEconomiesResource extends Resource
                     ->state(function (FinanceEconomy $r): string {
                         return FinanceEconomy::$statuses[$r->status];
                     })
+                    ->description(fn (Model $r) => $r->status == FinanceEconomy::STATUS_ERROR ? $r->error : '')
                     ->label('Статус'),
                 Tables\Columns\TextColumn::make('performance')
                     ->sortable()
@@ -72,7 +73,10 @@ class FinanceEconomiesResource extends Resource
                     ->label('Обновлено'),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')->options(FinanceEconomy::$statuses)->label('Статус'),
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(FinanceEconomy::$statuses)
+                    ->multiple()
+                    ->label('Статус'),
                 Filter::make('created_at')
                     ->form([
                         DatePicker::make('created_from')->label('Создано от'),
@@ -204,6 +208,7 @@ class FinanceEconomiesResource extends Resource
                 ->options(FinanceEconomy::$statuses)
                 ->colors(FinanceEconomy::$statusColors)
                 ->inline()
+                ->helperText(fn (Model $r) => $r->status == FinanceEconomy::STATUS_ERROR ? $r->error : '')
                 ->disabled(fn () => !auth()->user()->hasRole('admins'))
                 ->label('Статус'),
             Forms\Components\Select::make('project_id')
@@ -212,7 +217,6 @@ class FinanceEconomiesResource extends Resource
                 ->searchable()
                 ->preload()
                 ->unique(ignoreRecord: true)
-//                ->columnSpanFull()
                 ->suffixAction(
                     Action::make('Перейти')
                         ->icon('heroicon-m-globe-alt')
