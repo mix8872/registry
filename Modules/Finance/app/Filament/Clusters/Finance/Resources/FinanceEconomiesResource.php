@@ -62,6 +62,11 @@ class FinanceEconomiesResource extends Resource
                 Tables\Columns\TextColumn::make('profit')
                     ->sortable()
                     ->numeric()
+                    ->color(fn (Model $r) => match (true) {
+                        $r->profit > 0 => 'success',
+                        $r->profit < -100000 => 'danger',
+                        default => 'warning',
+                    })
                     ->label('Доход'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->sortable()->dateTime()
@@ -224,7 +229,7 @@ class FinanceEconomiesResource extends Resource
                 ->options(FinanceEconomy::$statuses)
                 ->colors(FinanceEconomy::$statusColors)
                 ->inline()
-                ->helperText(fn(Model $r) => $r->error)
+                ->helperText(fn(FinanceEconomy $r) => $r->error)
                 ->disabled(fn() => !auth()->user()->hasRole('admins'))
                 ->label('Статус'),
             Forms\Components\Select::make('project_id')
