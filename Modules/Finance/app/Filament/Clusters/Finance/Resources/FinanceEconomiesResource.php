@@ -229,6 +229,7 @@ class FinanceEconomiesResource extends Resource
                 ->options(FinanceEconomy::$statuses)
                 ->colors(FinanceEconomy::$statusColors)
                 ->inline()
+                ->hidden(fn(FinanceEconomy $r) => !$r->exists)
                 ->helperText(fn(FinanceEconomy $r) => $r->error)
                 ->disabled(fn() => !auth()->user()->hasRole('admins'))
                 ->label('Статус'),

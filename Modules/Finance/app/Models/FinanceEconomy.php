@@ -37,6 +37,10 @@ class FinanceEconomy extends Model
         FinanceEconomy::STATUS_RECALC => 'warning'
     ];
 
+    protected $attributes = [
+        'status' => self::STATUS_NEW,
+    ];
+
     /**
      * The attributes that are mass assignable.
      */
