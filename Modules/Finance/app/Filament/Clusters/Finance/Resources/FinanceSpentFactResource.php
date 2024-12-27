@@ -4,6 +4,7 @@ namespace Modules\Finance\Filament\Clusters\Finance\Resources;
 
 use App\Models\Project;
 use Filament\Forms\Components\DatePicker;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
@@ -47,6 +48,7 @@ class FinanceSpentFactResource extends Resource
                     ->label('Ресурс'),
                 Tables\Columns\TextColumn::make('project.name')
                     ->description(fn(Model $r) => $r->task_url)
+                    ->wrap()
                     ->url(fn(Model $r) => $r->task_url, true)
                     ->label('Проект'),
                 Tables\Columns\TextColumn::make('date')
@@ -55,6 +57,7 @@ class FinanceSpentFactResource extends Resource
                     ->label('Дата'),
                 Tables\Columns\TextColumn::make('count')
                     ->description(fn(Model $r) => $r->comment)
+                    ->wrap()
                     ->time('H:i')
                     ->summarize([
                         Average::make()->formatStateUsing(fn($state) => date('H:i', $state)),
@@ -125,14 +128,17 @@ class FinanceSpentFactResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->slideOver()
+                    ->size(ActionSize::ExtraLarge)->label('')
                     ->extraModalFooterActions(fn(Action $action): array => [
                         EditAction::make()->slideOver()->form(static::getFormFields())
                     ]),
                 Tables\Actions\EditAction::make()->icon('mdi-pencil')
                     ->visible(fn(Model $r) => empty($r->crm_id))->requiresConfirmation()
-                    ->slideOver(),
+                    ->slideOver()
+                ->size(ActionSize::ExtraLarge)->label(''),
                 Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')
-                    ->visible(fn(Model $r) => empty($r->crm_id))->requiresConfirmation(),
+                    ->visible(fn(Model $r) => empty($r->crm_id))->requiresConfirmation()
+                ->size(ActionSize::ExtraLarge)->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

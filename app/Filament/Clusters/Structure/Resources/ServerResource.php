@@ -15,6 +15,7 @@ use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -43,6 +44,7 @@ class ServerResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->description(fn(Model $r) => $r->comment)
+                    ->wrap()
                     ->searchable()->sortable()
                     ->label('Название'),
                 Tables\Columns\IconColumn::make('is_public_nat')
@@ -127,9 +129,9 @@ class ServerResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->icon('mdi-pencil'),
-                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
+                Tables\Actions\ViewAction::make()->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil')->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation()->size(ActionSize::ExtraLarge)->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

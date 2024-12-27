@@ -10,6 +10,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -134,10 +135,12 @@ class FinanceEconomiesResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->label('')
+                    ->size(ActionSize::ExtraLarge)
                     ->tooltip('Просмотр'),
                 Tables\Actions\EditAction::make()
                     ->icon('mdi-pencil')
                     ->label('')
+                    ->size(ActionSize::ExtraLarge)
                     ->tooltip('Изменить')
                     ->visible(fn(Model $r) => in_array(auth()->user()->id, [
                             $r->created_by,
@@ -145,6 +148,7 @@ class FinanceEconomiesResource extends Resource
                         ]) || auth()->user()->hasRole('admins')),
                 Tables\Actions\CreateAction::make('clone')
                     ->label('')
+                    ->size(ActionSize::ExtraLarge)
                     ->color('info')
                     ->tooltip('Клонировать')
                     ->modalHeading(fn(FinanceEconomy $r) => "Клонировать в новый расчет экономики проекта")
