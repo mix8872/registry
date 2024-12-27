@@ -10,6 +10,7 @@ use App\Models\Stack;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\ActionSize;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -63,9 +64,12 @@ class StackResource extends Resource
                 // ...
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->slideOver()->modalWidth(MaxWidth::SevenExtraLarge),
-                Tables\Actions\EditAction::make()->icon('mdi-pencil')->slideOver()->modalWidth(MaxWidth::SevenExtraLarge),
-                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
+                Tables\Actions\ViewAction::make()->slideOver()->modalWidth(MaxWidth::SevenExtraLarge)
+                ->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil')->slideOver()->modalWidth(MaxWidth::SevenExtraLarge)
+                ->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation()
+                ->size(ActionSize::ExtraLarge)->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

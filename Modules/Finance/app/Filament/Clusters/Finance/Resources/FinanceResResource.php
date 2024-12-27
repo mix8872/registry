@@ -2,6 +2,7 @@
 
 namespace Modules\Finance\Filament\Clusters\Finance\Resources;
 
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Actions\EditAction;
@@ -99,12 +100,15 @@ class FinanceResResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make()
                     ->slideOver()
+                    ->size(ActionSize::ExtraLarge)->label('')
                     ->extraModalFooterActions(fn (Action $action): array => [
                         EditAction::make()->slideOver()->form(static::getFormFields()),
                     ]),
                 Tables\Actions\EditAction::make()->icon('mdi-pencil')
-                    ->slideOver(),
-                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
+                    ->slideOver()
+                ->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation()
+                ->size(ActionSize::ExtraLarge)->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

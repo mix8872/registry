@@ -13,6 +13,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -41,11 +42,12 @@ class ProjectResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable()->sortable()
                     ->description(fn(Model $r) => $r->comment)
+                    ->wrap()
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('creds_url')
                     ->searchable()->sortable()
                     ->url(fn(Model $r): string|null => $r->creds_url, true)
-                    ->getStateUsing(fn() => 'Перейти')
+                    ->getStateUsing(fn(Model $r) => $r->creds_url ? 'Перейти' : null)
                     ->label('Доступы'),
                 Tables\Columns\SelectColumn::make('status')
                     ->selectablePlaceholder(false)
@@ -104,9 +106,9 @@ class ProjectResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->icon('mdi-pencil'),
-                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
+                Tables\Actions\ViewAction::make()->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil')->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation()->size(ActionSize::ExtraLarge)->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

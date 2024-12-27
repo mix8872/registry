@@ -11,6 +11,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\ActionSize;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -40,6 +41,7 @@ class ContainerResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->description(fn(Model $r) => $r->comment)
+                    ->wrap()
                     ->label('Название'),
                 Tables\Columns\TextColumn::make('repository.name')
                     ->url(fn(Model $r): string|null => $r->repository ? RepositoryResource::getUrl('edit', ['record' => $r->repository->id]) : null, true)
@@ -105,9 +107,9 @@ class ContainerResource extends Resource
                     ->label('Сервер')
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make()->icon('mdi-pencil'),
-                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation(),
+                Tables\Actions\ViewAction::make()->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\EditAction::make()->icon('mdi-pencil')->size(ActionSize::ExtraLarge)->label(''),
+                Tables\Actions\DeleteAction::make()->icon('mdi-close-thick')->requiresConfirmation()->size(ActionSize::ExtraLarge)->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
